@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserRole;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -29,9 +30,27 @@ class User extends Authenticatable implements PasskeyUser
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRole::class,
+            'tanggal_lahir' => 'date',
+            'is_active' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
+    }
+
+    public function isMahasiswa(): bool
+    {
+        return $this->role === UserRole::Mahasiswa;
+    }
+
+    public function isDosen(): bool
+    {
+        return $this->role === UserRole::Dosen;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === UserRole::Admin;
     }
 
     /**
@@ -39,7 +58,7 @@ class User extends Authenticatable implements PasskeyUser
      */
     public function initials(): string
     {
-        return Str::of($this->name)
+        return Str::of($this->nama)
             ->explode(' ')
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
