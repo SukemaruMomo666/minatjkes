@@ -13,7 +13,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/mahasiswa/results', App\Livewire\Mahasiswa\Hasil\ResultPage::class)->name('mahasiswa.results');
 
     Route::get('/dosen/dashboard', App\Livewire\Dosen\Dashboard\Index::class)->name('dosen.dashboard');
+    Route::get('/admin/dashboard', App\Livewire\Admin\Dashboard\Index::class)->name('admin.dashboard');
 });
+
 
 Route::get('/mahasiswa/dashboard', function () {
     return view('mahasiswa.dashboard');
