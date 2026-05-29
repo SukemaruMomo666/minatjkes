@@ -11,6 +11,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/mahasiswa/results', App\Livewire\Mahasiswa\Hasil\ResultPage::class)->name('mahasiswa.results');
+
+    Route::get('/dosen/dashboard', App\Livewire\Dosen\Dashboard\Index::class)->name('dosen.dashboard');
 });
 
 Route::get('/mahasiswa/dashboard', function () {
