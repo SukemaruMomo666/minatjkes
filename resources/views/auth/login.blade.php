@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SIMINAT</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @fluxStyles
 </head>
 <body class="bg-white min-h-screen font-sans">
     
