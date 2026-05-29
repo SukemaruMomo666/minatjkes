@@ -12,8 +12,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/mahasiswa/results', App\Livewire\Mahasiswa\Hasil\ResultPage::class)->name('mahasiswa.results');
 
+    // Dosen routes
     Route::get('/dosen/dashboard', App\Livewire\Dosen\Dashboard\Index::class)->name('dosen.dashboard');
+
+    // Admin routes
     Route::get('/admin/dashboard', App\Livewire\Admin\Dashboard\Index::class)->name('admin.dashboard');
+    Route::get('/admin/students', App\Livewire\Admin\StudentManagement\Index::class)->name('admin.students');
+    Route::get('/admin/lecturers', App\Livewire\Admin\LecturerManagement\Index::class)->name('admin.lecturers');
 });
 
 
