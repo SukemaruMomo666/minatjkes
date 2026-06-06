@@ -1,147 +1,182 @@
-<div class="flex h-screen bg-[#f4f6fa] w-full font-sans">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="flex h-screen overflow-hidden" style="background-color:#FDF6E8;">
 
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex z-20 shrink-0">
-        <div class="h-20 flex items-center px-8 border-b border-gray-100">
-            <div class="w-8 h-8 bg-[#2a3c5a] rounded-lg flex items-center justify-center text-white font-bold text-xl mr-3 shadow-md">S</div>
-            <div>
-                <h1 class="text-lg font-black text-[#2a3c5a] leading-tight tracking-tight uppercase">Project<br>Siminat</h1>
-                <p class="text-[10px] text-gray-400 font-medium tracking-wider uppercase mt-0.5">Student Portal</p>
+    {{-- Sidebar --}}
+    <aside class="w-[220px] flex-col hidden md:flex shrink-0 relative" style="background-color:#1A2340;">
+        <div class="absolute inset-0 siminat-batik" style="opacity:0.05;"></div>
+        <div class="h-16 flex items-center px-5 relative" style="border-bottom:1px solid rgba(232,213,163,0.15);">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;">
+                <i class="ti ti-plus font-bold" style="color:#1A2340;font-size:15px;"></i>
             </div>
+            <span class="font-bold tracking-widest text-sm" style="color:#FDF6E8;letter-spacing:0.15em;">SIMINAT</span>
         </div>
-        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            <a href="{{ route('mahasiswa.dashboard') }}" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-[#2a3c5a] rounded-xl font-semibold transition-all">
-                <svg class="w-5 h-5 mr-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> Dashboard
+        <nav class="flex-1 px-3 py-5 space-y-1 relative">
+            <a href="{{ route('mahasiswa.dashboard') }}"
+               class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all hover:bg-white/10"
+               style="color:rgba(253,246,232,0.65);">
+                <i class="ti ti-home mr-3 text-base"></i> Beranda
             </a>
-            <a href="{{ route('mahasiswa.tes') }}" class="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-[#2a3c5a] rounded-xl font-semibold transition-all">
-                <svg class="w-5 h-5 mr-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg> Assessments
+            <a href="{{ route('mahasiswa.tes') }}"
+               class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all hover:bg-white/10"
+               style="color:rgba(253,246,232,0.65);">
+                <i class="ti ti-clipboard-list mr-3 text-base"></i> Mulai Tes
             </a>
-            <a href="{{ route('mahasiswa.results') }}" class="flex items-center px-4 py-3 bg-[#eed9c4] text-[#D98324] rounded-xl font-bold transition-all border-l-4 border-[#D98324]">
-                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Results
+            <a href="{{ route('mahasiswa.results') }}"
+               class="flex items-center px-4 py-2.5 rounded-lg text-sm font-semibold"
+               style="background-color:rgba(200,146,42,0.15);color:#C8922A;border-left:3px solid #C8922A;">
+                <i class="ti ti-report-analytics mr-3 text-base"></i> Hasil Saya
             </a>
         </nav>
+        <div class="mx-3 mb-4 p-4 rounded-xl" style="background-color:rgba(46,125,85,0.1);border:1px solid rgba(46,125,85,0.2);">
+            <i class="ti ti-circle-check text-xl mb-1 block" style="color:#4ade80;"></i>
+            <p class="text-xs leading-relaxed" style="color:rgba(253,246,232,0.65);">Rapor Potensi Dirimu telah selesai! 🎉</p>
+        </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-screen overflow-hidden">
-        <header class="h-20 bg-[#162744] flex items-center justify-between px-8 shadow-sm shrink-0 z-10">
-            <div class="flex-1 max-w-xl relative">
-                <input type="text" class="w-full bg-white/10 border-0 text-white placeholder-gray-400 rounded-xl px-4 py-3 text-sm" placeholder="Cari laporan atau saran...">
+    {{-- Main --}}
+    <main class="flex-1 flex flex-col overflow-hidden">
+
+        {{-- Navbar --}}
+        <header class="h-16 flex items-center justify-between px-8 shrink-0"
+                style="background-color:#1A2340;border-bottom:1px solid rgba(232,213,163,0.15);">
+            <div class="flex items-center gap-2 text-xs" style="color:rgba(253,246,232,0.45);">
+                <i class="ti ti-report-analytics text-sm"></i>
+                <span>/</span>
+                <span style="color:rgba(253,246,232,0.7);">Rapor Potensi Diri</span>
             </div>
-            <div class="flex items-center space-x-6 ml-6">
-                <div class="flex items-center cursor-pointer group">
-                    <div class="w-10 h-10 rounded-full bg-[#D98324] flex items-center justify-center text-white font-bold mr-3 border-2 border-white/20">{{ substr(Auth::user()->nama ?? 'AS', 0, 2) }}</div>
-                    <div>
-                        <p class="text-sm font-bold text-white leading-tight">{{ Auth::user()->nama ?? 'Student' }}</p>
-                    </div>
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+                     style="background-color:#C8922A;color:#1A2340;">
+                    {{ substr(Auth::user()->nama ?? 'AS', 0, 2) }}
                 </div>
+                <p class="text-sm font-semibold" style="color:#FDF6E8;">{{ Auth::user()->nama ?? '' }}</p>
             </div>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-6 md:p-10">
-            <div class="max-w-6xl mx-auto">
-                
-                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-[#162744]">Rapor Potensi Diri</h2>
-                        <p class="text-sm text-gray-500 mt-1 flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            Penyelesaian Terakhir: {{ date('d F Y') }}
-                        </p>
+        {{-- Scrollable content --}}
+        <div class="flex-1 overflow-y-auto">
+
+            {{-- Hero --}}
+            <section class="relative px-8 py-10 overflow-hidden" style="background-color:#1A2340;">
+                <div class="absolute inset-0 siminat-batik" style="opacity:0.07;"></div>
+                <div class="relative text-center">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-full mb-4"
+                         style="background-color:rgba(200,146,42,0.15);border:2px solid rgba(200,146,42,0.3);">
+                        <i class="ti ti-rosette-discount-check text-3xl" style="color:#C8922A;"></i>
                     </div>
-                    <div class="flex gap-3">
-                        <button class="px-5 py-2.5 border-2 border-[#D98324] text-[#D98324] font-bold rounded-lg hover:bg-orange-50 transition text-sm flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Download PDF Report
-                        </button>
-                        <button class="px-5 py-2.5 bg-[#D98324] text-white font-bold rounded-lg hover:bg-[#c27520] transition shadow-md text-sm flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg> Consult with Counselor
-                        </button>
-                    </div>
+                    <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#C8922A;letter-spacing:0.15em;">Rapor Potensi Diri</p>
+                    <h1 class="font-display text-3xl font-bold mb-2" style="color:#FDF6E8;">
+                        Pemetaan Potensimu Telah Selesai! <span>🎉</span>
+                    </h1>
+                    <p class="text-sm" style="color:rgba(253,246,232,0.55);">
+                        {{ Auth::user()->nama }} &middot; {{ Auth::user()->nim_nidn }} &middot; Dibuat {{ date('d F Y') }}
+                    </p>
                 </div>
+            </section>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                    
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:col-span-2 flex flex-col relative">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="font-bold text-[#162744] text-lg">Kompetensi Bidang Kesehatan</h3>
-                            <button class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
-                        </div>
-                        
-                        <div class="flex-1 flex justify-center items-center w-full min-h-[300px]">
-                            <canvas id="radarChart"></canvas>
-                        </div>
+            {{-- Content --}}
+            <div class="px-8 py-8 max-w-5xl mx-auto space-y-6">
 
-                        <div class="flex flex-wrap justify-center gap-4 mt-4 pt-4 border-t border-gray-50">
+                {{-- Section 1: Tipe Kepribadian & Top Kategori --}}
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+
+                    {{-- Tipe Kepribadian --}}
+                    <div class="sim-card p-6 lg:col-span-2">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="font-display text-lg font-bold" style="color:#1A2340;">Tipe Potensi Utama</h2>
+                        </div>
+                        <div class="text-center p-5 rounded-xl mb-4 relative overflow-hidden"
+                             style="background-color:#1A2340;">
+                            <div class="absolute inset-0 siminat-batik" style="opacity:0.08;"></div>
+                            <i class="ti ti-brain text-4xl mb-2 relative block" style="color:#C8922A;"></i>
+                            <h3 class="font-display text-xl font-bold relative" style="color:#C8922A;">{{ $tipeKepribadian }}</h3>
+                        </div>
+                        <p class="text-sm leading-relaxed" style="color:#2D3F6B;">{{ $deskripsiKepribadian }}</p>
+
+                        {{-- Top Kategori bars --}}
+                        <div class="mt-5 space-y-3">
                             @foreach($topKategori as $nama => $skor)
-                                <div class="flex items-center text-xs font-semibold text-gray-600">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-[#D98324] mr-2"></span> {{ $nama }}: {{ $skor }}%
+                                <div>
+                                    <div class="flex justify-between text-xs font-semibold mb-1">
+                                        <span style="color:#1A2340;">{{ $nama }}</span>
+                                        <span style="color:#C8922A;">{{ $skor }}%</span>
+                                    </div>
+                                    <div class="sim-progress-bar">
+                                        <div class="sim-progress-fill" style="width:{{ $skor }}%;"></div>
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
                     </div>
 
-                    <div class="flex flex-col gap-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex-1 relative overflow-hidden">
-                            <svg class="absolute -right-6 -top-6 w-32 h-32 text-gray-50 opacity-50" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-11a1 1 0 112 0v4a1 1 0 11-2 0V9zm1 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
-                            <h3 class="font-bold text-[#162744] text-lg mb-4">Tipe Karir Anda</h3>
-                            <div class="mb-4">
-                                <h1 class="text-2xl font-black text-[#D98324] tracking-tight">{{ $tipeKepribadian }}</h1>
-                            </div>
-                            <p class="text-sm text-gray-500 leading-relaxed">{{ $deskripsiKepribadian }}</p>
-                            
-                            <div class="mt-6 space-y-3">
-                                @foreach($topKategori as $nama => $skor)
-                                    <div>
-                                        <div class="flex justify-between text-xs font-bold text-gray-600 mb-1"><span>{{ $nama }}</span></div>
-                                        <div class="w-full bg-gray-100 rounded-full h-1.5"><div class="bg-[#D98324] h-1.5 rounded-full" style="width: {{ $skor }}%"></div></div>
-                                    </div>
-                                @endforeach
-                            </div>
+                    {{-- Radar Chart --}}
+                    <div class="sim-card p-6 lg:col-span-3">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="font-display text-lg font-bold" style="color:#1A2340;">Peta Kompetensi</h2>
+                            <i class="ti ti-chart-radar text-xl" style="color:#C8922A;"></i>
                         </div>
-
-                        <div class="bg-[#162744] p-6 rounded-2xl shadow-sm relative overflow-hidden">
-                            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/5 rounded-full"></div>
-                            <h3 class="font-bold text-white text-md mb-4 flex items-center">
-                                <svg class="w-5 h-5 text-[#D98324] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
-                                Kekuatan Utama
-                            </h3>
-                            <ul class="space-y-3">
-                                @php $index = 0; @endphp
-                                @foreach($topKategori as $nama => $skor)
-                                    @if($index < 2)
-                                        <li class="flex items-start text-sm text-gray-300">
-                                            <svg class="w-5 h-5 text-green-400 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                            Sangat dominan di bidang {{ $nama }}.
-                                        </li>
-                                    @endif
-                                    @php $index++; @endphp
-                                @endforeach
-                            </ul>
+                        <div class="flex justify-center">
+                            <canvas id="radarChart" style="max-width:320px;max-height:320px;"></canvas>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-3 mt-4 pt-4" style="border-top:1px solid rgba(26,35,64,0.07);">
+                            @foreach($topKategori as $nama => $skor)
+                                <div class="flex items-center gap-1.5 text-xs font-semibold" style="color:#2D3F6B;">
+                                    <span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color:#C8922A;"></span>
+                                    {{ $nama }}: {{ $skor }}%
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
 
-                <h3 class="font-bold text-[#162744] text-lg mb-4 mt-8">Rekomendasi Program Studi</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    @php 
-                        $warnaBadge = ['text-green-500 bg-green-50', 'text-orange-500 bg-orange-50', 'text-blue-500 bg-blue-50'];
-                        $i = 0;
-                    @endphp
-                    @foreach($topKategori as $nama => $skor)
-                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 cursor-pointer hover:border-[#D98324] hover:shadow-md transition">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="px-2 py-1 {{ $warnaBadge[$i%3] }} font-bold text-[10px] rounded-md">{{ $skor }}% MATCH</span>
-                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                {{-- Section 2: Rekomendasi --}}
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="font-display text-xl font-bold" style="color:#1A2340;">Rekomendasi Untukmu</h2>
+                        <span class="text-xs" style="color:#6B7494;">Berdasarkan profil potensimu</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        @php
+                            $i = 0;
+                            $warnaIkon = ['#C8922A', '#2D3F6B', '#2E7D55'];
+                        @endphp
+                        @foreach($topKategori as $nama => $skor)
+                            <div class="sim-card p-5">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"
+                                          style="background-color:rgba(200,146,42,0.1);color:#A6781F;">
+                                        {{ $skor }}% Match
+                                    </span>
+                                    <span class="text-xs font-semibold" style="color:#6B7494;">Prioritas {{ $i+1 }}</span>
+                                </div>
+                                <h4 class="text-base font-bold mb-1" style="color:#1A2340;">{{ $nama }}</h4>
+                                <p class="text-xs leading-relaxed" style="color:#6B7494;">
+                                    Kamu memiliki potensi kuat di bidang ini. Kembangkan lebih jauh melalui kegiatan dan organisasi yang relevan.
+                                </p>
                             </div>
-                            <h4 class="font-bold text-[#162744] text-md mb-1">{{ $nama }} Terapan</h4>
-                            <p class="text-xs text-gray-500 line-clamp-2 mb-3">Sangat cocok untuk memperdalam spesialisasi karir Anda.</p>
-                            <div class="flex gap-2">
-                                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-[9px] font-semibold rounded-md">Prioritas {{ $i+1 }}</span>
-                            </div>
-                        </div>
-                        @php $i++; @endphp
-                    @endforeach
+                            @php $i++; @endphp
+                        @endforeach
+                    </div>
                 </div>
+
+                {{-- Actions --}}
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <button class="sim-btn-gold text-sm">
+                        <i class="ti ti-download"></i> Unduh Rapor PDF
+                    </button>
+                    <a href="{{ route('mahasiswa.tes') }}" class="sim-btn-ghost text-sm">
+                        <i class="ti ti-refresh"></i> Isi Ulang Tes
+                    </a>
+                    <a href="{{ route('mahasiswa.dashboard') }}" class="inline-flex items-center gap-1.5 text-sm font-medium"
+                       style="color:#2D3F6B;">
+                        <i class="ti ti-arrow-left text-sm"></i> Kembali ke Dashboard
+                    </a>
+                </div>
+
+                {{-- Disclaimer --}}
+                <p class="text-xs pb-4" style="color:#6B7494;font-style:italic;">
+                    Hasil ini merupakan panduan pengembangan diri, bukan penilaian mutlak kemampuan kamu.
+                </p>
+
             </div>
         </div>
     </main>
@@ -149,24 +184,23 @@
 
 <script>
     document.addEventListener('livewire:initialized', () => {
-        const ctx = document.getElementById('radarChart').getContext('2d');
-        
+        const ctx = document.getElementById('radarChart');
+        if (!ctx) return;
+
         const labels = @json($radarLabels);
-        const dataSkor = @json($radarData);
+        const data   = @json($radarData);
 
         new Chart(ctx, {
             type: 'radar',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Skor Potensi (%)',
-                    data: dataSkor,
-                    backgroundColor: 'rgba(217, 131, 36, 0.2)',
-                    borderColor: '#D98324',
-                    pointBackgroundColor: '#162744',
+                    label: 'Skor (%)',
+                    data: data,
+                    backgroundColor: 'rgba(200,146,42,0.18)',
+                    borderColor: '#C8922A',
+                    pointBackgroundColor: '#1A2340',
                     pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: '#D98324',
                     borderWidth: 2,
                 }]
             },
@@ -175,27 +209,27 @@
                 maintainAspectRatio: false,
                 scales: {
                     r: {
-                        angleLines: { color: 'rgba(0, 0, 0, 0.05)' },
-                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                        angleLines: { color: 'rgba(26,35,64,0.08)' },
+                        grid: { color: 'rgba(26,35,64,0.08)' },
                         pointLabels: {
-                            color: '#162744',
-                            font: { family: "'Inter', sans-serif", size: 11, weight: 'bold' }
+                            color: '#2D3F6B',
+                            font: { family: "'Plus Jakarta Sans', sans-serif", size: 10, weight: '600' }
                         },
-                        ticks: { display: false, min: 0, max: 100 }
+                        ticks: { display: false },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
                     }
                 },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#162744',
-                        titleFont: { family: "'Inter', sans-serif", size: 13 },
-                        bodyFont: { family: "'Inter', sans-serif", size: 12 },
+                        backgroundColor: '#1A2340',
+                        titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 12 },
+                        bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 11 },
                         padding: 10,
                         cornerRadius: 8,
                         displayColors: false,
-                        callbacks: {
-                            label: function(context) { return context.raw + '% Match'; }
-                        }
+                        callbacks: { label: ctx => ctx.raw + '% Match' }
                     }
                 }
             }

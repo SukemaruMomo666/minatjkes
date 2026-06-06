@@ -1,7 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Livewire\Mahasiswa\Dashboard\Index;
+use App\Livewire\Mahasiswa\Hasil\ResultPage;
 use App\Livewire\Mahasiswa\Tes\TesWizard;
+use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -10,7 +12,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return redirect()->route('mahasiswa.dashboard');
     })->name('dashboard');
 
-    Route::get('/mahasiswa/results', App\Livewire\Mahasiswa\Hasil\ResultPage::class)->name('mahasiswa.results');
+    // Mahasiswa routes
+    Route::get('/mahasiswa/dashboard', Index::class)->name('mahasiswa.dashboard');
+    Route::get('/mahasiswa/results', ResultPage::class)->name('mahasiswa.results');
+    Route::get('/mahasiswa/tes', TesWizard::class)->name('mahasiswa.tes');
 
     // Dosen routes
     Route::get('/dosen/dashboard', App\Livewire\Dosen\Dashboard\Index::class)->name('dosen.dashboard');
@@ -19,13 +24,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/dashboard', App\Livewire\Admin\Dashboard\Index::class)->name('admin.dashboard');
     Route::get('/admin/students', App\Livewire\Admin\StudentManagement\Index::class)->name('admin.students');
     Route::get('/admin/lecturers', App\Livewire\Admin\LecturerManagement\Index::class)->name('admin.lecturers');
+    Route::get('/admin/kelas', App\Livewire\Admin\KelasManagement\Index::class)->name('admin.kelas');
+    Route::get('/admin/soal', App\Livewire\Admin\SoalManagement\Index::class)->name('admin.soal');
 });
-
-
-Route::get('/mahasiswa/dashboard', function () {
-    return view('mahasiswa.dashboard');
-})->name('mahasiswa.dashboard')->middleware(['auth']);
-
-Route::get('/mahasiswa/tes', TesWizard::class)->name('mahasiswa.tes')->middleware(['auth']);
 
 require __DIR__.'/settings.php';

@@ -1,91 +1,173 @@
-<div class="max-w-7xl mx-auto">
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12">
-        <div class="mb-8">
-            <h2 class="text-3xl font-extrabold text-[#2a3c5a] mb-3">Instruksi Persiapan Akhir</h2>
-            <p class="text-gray-500 text-sm md:text-base max-w-3xl leading-relaxed">
-                Mohon baca instruksi berikut dengan seksama untuk memastikan hasil asesmen psikologis yang akurat dan kredibel.
-            </p>
-        </div>
+<div class="max-w-4xl mx-auto">
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-center">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-[#D98324] mr-4">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-lg">Estimasi Waktu</h3>
-                        <p class="text-[#D98324] font-extrabold text-sm">15-20 Menit</p>
-                    </div>
+    {{-- Header --}}
+    <div class="mb-8">
+        <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#A6781F;letter-spacing:0.12em;">SIMINAT · Pemetaan Potensi</p>
+        <h2 class="font-display text-3xl font-bold mb-2" style="color:#1A2340;">Instruksi Pengisian</h2>
+        <p class="text-base" style="color:#2D3F6B;">
+            Baca instruksi berikut sebelum memulai agar hasilmu akurat dan bermakna.
+        </p>
+    </div>
+
+    {{-- Info cards --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+
+        <div class="sim-card p-5">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background-color:rgba(200,146,42,0.1);">
+                    <i class="ti ti-clock text-xl" style="color:#C8922A;"></i>
                 </div>
-                <p class="text-xs text-gray-500 leading-relaxed">Disarankan untuk menyelesaikan sesi ini dalam satu waktu tanpa interupsi untuk hasil maksimal.</p>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm lg:col-span-2">
-                <h3 class="font-bold text-gray-900 text-lg mb-2">Metodologi Pengisian</h3>
-                <p class="text-xs text-gray-500 mb-8">Pilihlah jawaban yang paling merepresentasikan diri Anda pada skala Likert berikut:</p>
-                
-                <div class="relative flex justify-between items-center px-2 md:px-8">
-                    <div class="absolute left-8 right-8 top-5 h-0.5 bg-gray-200 z-0"></div>
-                    <div class="relative flex flex-col items-center z-10"><div class="w-10 h-10 rounded-full bg-white border-2 border-[#D98324] flex items-center justify-center font-bold text-gray-600 mb-2">1</div><span class="text-[9px] text-gray-400 font-medium text-center w-16 uppercase leading-tight">Sangat Tidak Setuju</span></div>
-                    <div class="relative flex flex-col items-center z-10"><div class="w-10 h-10 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center font-bold text-gray-400 mb-2">2</div><span class="text-[9px] text-gray-400 font-medium text-center w-16 uppercase leading-tight">Tidak Setuju</span></div>
-                    <div class="relative flex flex-col items-center z-10"><div class="w-10 h-10 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center font-bold text-gray-400 mb-2">3</div><span class="text-[9px] text-gray-400 font-medium text-center w-16 uppercase leading-tight">Netral</span></div>
-                    <div class="relative flex flex-col items-center z-10"><div class="w-10 h-10 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center font-bold text-gray-400 mb-2">4</div><span class="text-[9px] text-gray-400 font-medium text-center w-16 uppercase leading-tight">Setuju</span></div>
-                    <div class="relative flex flex-col items-center z-10"><div class="w-10 h-10 rounded-full bg-[#D98324] shadow-md shadow-orange-500/30 flex items-center justify-center font-bold text-white mb-2">5</div><span class="text-[9px] text-[#D98324] font-bold text-center w-16 uppercase leading-tight">Sangat Setuju</span></div>
+                <div>
+                    <p class="text-sm font-bold" style="color:#1A2340;">Estimasi Waktu</p>
+                    <p class="text-xs font-bold" style="color:#C8922A;">15–20 Menit</p>
                 </div>
             </div>
+            <p class="text-xs leading-relaxed" style="color:#6B7494;">Disarankan menyelesaikan dalam satu sesi tanpa interupsi untuk hasil terbaik.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                <h3 class="font-bold text-gray-900 text-lg mb-4 flex items-center">
-                    <div class="w-8 h-8 bg-orange-50 text-[#D98324] rounded-lg flex items-center justify-center mr-3"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></div>
-                    Tips Lingkungan
-                </h3>
-                <ul class="space-y-3">
-                    <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Cari tempat tenang & bebas bising</li>
-                    <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Pastikan koneksi internet stabil</li>
-                    <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Hindari gangguan dari perangkat lain</li>
-                </ul>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                <h3 class="font-bold text-gray-900 text-lg mb-4 flex items-center">
-                    <div class="w-8 h-8 bg-orange-50 text-[#D98324] rounded-lg flex items-center justify-center mr-3"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                    Tips Mental
-                </h3>
-                <ul class="space-y-3">
-                    <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Jawab dengan jujur sesuai kondisi asli</li>
-                    <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Gunakan impresi pertama (Spontanitas)</li>
-                    <li class="flex items-start text-sm text-gray-600"><svg class="w-5 h-5 text-green-500 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Tidak ada jawaban benar atau salah</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="w-full h-24 bg-gradient-to-r from-[#2a3c5a] to-[#4b5a77] rounded-xl mb-8 flex items-end p-6 relative overflow-hidden">
-            <div class="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
-            <span class="text-[#D98324] font-extrabold tracking-[0.2em] text-xs z-10 uppercase">
-                Akademik &bull; Profesional &bull; Akurat
-            </span>
-        </div>
-
-        <div class="border-t border-gray-100 pt-6 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="w-full md:w-1/3">
-                <div class="flex justify-between text-xs font-bold mb-2">
-                    <span class="text-[#2a3c5a]">Progres Persiapan</span>
-                    <span class="text-[#D98324]">100% Selesai</span>
+        <div class="sim-card p-5">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background-color:rgba(200,146,42,0.1);">
+                    <i class="ti ti-home text-xl" style="color:#C8922A;"></i>
                 </div>
-                <div class="w-full h-2 bg-gray-200 rounded-full"><div class="h-2 bg-[#D98324] rounded-full" style="width: 100%"></div></div>
+                <div>
+                    <p class="text-sm font-bold" style="color:#1A2340;">Tips Lingkungan</p>
+                </div>
             </div>
+            <ul class="space-y-1.5">
+                <li class="flex items-center gap-2 text-xs" style="color:#2D3F6B;">
+                    <i class="ti ti-check text-sm" style="color:#2E7D55;"></i> Cari tempat tenang & bebas gangguan
+                </li>
+                <li class="flex items-center gap-2 text-xs" style="color:#2D3F6B;">
+                    <i class="ti ti-check text-sm" style="color:#2E7D55;"></i> Pastikan koneksi internet stabil
+                </li>
+            </ul>
+        </div>
 
-            <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                <button wire:click="reviewTes" class="px-8 py-3.5 border-2 border-[#D98324] text-[#D98324] font-bold rounded-xl hover:bg-orange-50 transition w-full sm:w-auto text-sm text-center">
-                    Review Kembali
-                </button>
-                <button wire:click="mulaiTes" class="px-8 py-3.5 bg-[#D98324] text-white font-bold rounded-xl hover:bg-[#c27520] transition shadow-lg shadow-orange-500/30 flex items-center justify-center w-full sm:w-auto text-sm">
-                    Mulai Sekarang
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </button>
+        <div class="sim-card p-5">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background-color:rgba(200,146,42,0.1);">
+                    <i class="ti ti-mood-smile text-xl" style="color:#C8922A;"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-bold" style="color:#1A2340;">Tips Mental</p>
+                </div>
             </div>
+            <ul class="space-y-1.5">
+                <li class="flex items-center gap-2 text-xs" style="color:#2D3F6B;">
+                    <i class="ti ti-check text-sm" style="color:#2E7D55;"></i> Jawab jujur sesuai kondisi aslimu
+                </li>
+                <li class="flex items-center gap-2 text-xs" style="color:#2D3F6B;">
+                    <i class="ti ti-check text-sm" style="color:#2E7D55;"></i> Tidak ada jawaban benar/salah
+                </li>
+            </ul>
         </div>
     </div>
+
+    {{-- Skala Penilaian (desain lingkaran) --}}
+    <div class="sim-card p-6 mb-6">
+        <h3 class="text-base font-bold mb-1" style="color:#1A2340;">Skala Penilaian</h3>
+        <p class="text-xs mb-6" style="color:#6B7494;">Setiap pertanyaan dijawab dengan memilih salah satu lingkaran berikut:</p>
+
+        {{-- Preview lingkaran seperti saat tes --}}
+        <div class="flex items-center justify-between mb-5">
+            <span class="text-xs font-bold" style="color:#C8922A;">Setuju</span>
+            <div class="flex items-center gap-2 flex-1 justify-center">
+                @php $sizes = [36, 28, 20, 28, 36]; @endphp
+                @foreach([1,2,3,4,5] as $n)
+                    <div class="rounded-full border-2 flex items-center justify-center font-bold transition-all"
+                         style="width:{{ $sizes[$n-1] }}px; height:{{ $sizes[$n-1] }}px;
+                                font-size:{{ $n === 1 || $n === 5 ? '13px' : ($n === 3 ? '10px' : '11px') }};
+                                {{ $n === 1
+                                    ? 'background-color:#C8922A; border-color:#C8922A; color:#fff; box-shadow:0 2px 8px rgba(200,146,42,0.35);'
+                                    : 'background-color:#fff; border-color:rgba(26,35,64,0.18); color:#6B7494;' }}">
+                        {{ $n }}
+                    </div>
+                @endforeach
+            </div>
+            <span class="text-xs font-bold" style="color:#6B7494;">Tidak Setuju</span>
+        </div>
+
+        {{-- Legenda label --}}
+        <div class="grid grid-cols-5 gap-1 text-center">
+            @php
+                $labels = ['Sangat Setuju', 'Setuju', 'Netral', 'Tidak Setuju', 'Sangat Tidak Setuju'];
+                $colors = ['#C8922A', '#C8922A', '#6B7494', '#6B7494', '#6B7494'];
+            @endphp
+            @foreach($labels as $i => $label)
+                <div class="flex flex-col items-center gap-1">
+                    <div class="w-px h-3" style="background-color:rgba(26,35,64,0.15);"></div>
+                    <span style="font-size:10px; color:{{ $colors[$i] }}; font-weight:{{ $i < 2 ? '700' : '500' }}; line-height:1.3;">
+                        {{ $label }}
+                    </span>
+                </div>
+            @endforeach
+        </div>
+
+        {{-- Contoh soal mini --}}
+        <div class="mt-5 p-4 rounded-xl" style="background-color:rgba(253,246,232,0.6); border:1px solid rgba(200,146,42,0.15);">
+            <p class="text-xs font-semibold mb-3" style="color:#1A2340;">
+                <i class="ti ti-info-circle mr-1" style="color:#C8922A;"></i>
+                Contoh: "Saya menyukai kegiatan yang melibatkan kerja tim."
+            </p>
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-bold" style="color:#C8922A;">Setuju</span>
+                <div class="flex items-center gap-1.5 flex-1 justify-center">
+                    @foreach([1,2,3,4,5] as $n)
+                        <div class="rounded-full border-2 flex items-center justify-center"
+                             style="width:{{ $sizes[$n-1] }}px; height:{{ $sizes[$n-1] }}px;
+                                    {{ $n === 2
+                                        ? 'background-color:#C8922A; border-color:#C8922A; box-shadow:0 2px 8px rgba(200,146,42,0.3);'
+                                        : 'background-color:#fff; border-color:rgba(26,35,64,0.15);' }}">
+                            @if($n === 2)
+                                <i class="ti ti-check" style="color:#fff; font-size:11px;"></i>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+                <span class="text-xs" style="color:#6B7494;">Tidak Setuju</span>
+            </div>
+            <p class="text-xs mt-2" style="color:#6B7494; font-style:italic;">
+                → Lingkaran ke-2 dipilih, artinya "Setuju" dengan pernyataan tersebut.
+            </p>
+        </div>
+    </div>
+
+    {{-- Navy banner --}}
+    <div class="rounded-2xl px-6 py-5 mb-6 relative overflow-hidden" style="background-color:#1A2340;">
+        <div class="absolute inset-0 siminat-batik" style="opacity:0.07;"></div>
+        <p class="relative text-xs font-bold tracking-widest uppercase" style="color:#C8922A;letter-spacing:0.2em;">
+            Akademik &bull; Profesional &bull; Akurat
+        </p>
+    </div>
+
+    {{-- Actions --}}
+    @php
+        $answered   = App\Models\DraftJawaban::where('user_id', Auth::id())->count();
+        $hasDraft   = $answered > 0;
+        $resumeBatch = $totalSoal > 0 ? min((int) floor($answered / $batchSize), $totalBatches - 1) + 1 : 1;
+    @endphp
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+        <div>
+            @if($hasDraft)
+                <p class="text-sm font-medium" style="color:#2D3F6B;">
+                    <i class="ti ti-history mr-1" style="color:#C8922A;"></i>
+                    Kamu sudah menjawab <strong style="color:#C8922A;">{{ $answered }}</strong> dari {{ $totalSoal }} soal
+                    &mdash; akan dilanjutkan dari halaman {{ $resumeBatch }}.
+                </p>
+            @endif
+        </div>
+        <div class="flex gap-3">
+            @if($hasDraft)
+                <button wire:click="reviewTes" class="sim-btn-ghost text-sm">
+                    <i class="ti ti-eye"></i> Tinjau dari Awal
+                </button>
+            @endif
+            <button wire:click="mulaiTes" class="sim-btn-gold text-sm">
+                {{ $hasDraft ? 'Lanjutkan Tes' : 'Mulai Sekarang' }}
+                <i class="ti ti-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
 </div>

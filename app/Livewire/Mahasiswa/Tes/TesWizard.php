@@ -2,104 +2,143 @@
 
 namespace App\Livewire\Mahasiswa\Tes;
 
-use App\Models\Soal;
-use Livewire\Component;
 use App\Models\DraftJawaban;
+use App\Models\Soal;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class TesWizard extends Component
 {
     public $soals;
-    public $currentIndex = 0;
-    public $totalSoal = 0;
-    public $jawabanTerpilih = null;
-    public $isSaved = false;
-    public $hasStarted = false;
 
-    public function mount()
+    public bool $hasStarted = false;
+
+    public int $batchSize = 6;
+
+    public int $currentBatch = 0;
+
+    public int $totalBatches = 0;
+
+    public int $totalSoal = 0;
+
+    /** @var array<string, int|null> soal_id => nilai */
+    public array $jawabanBatch = [];
+
+    public function mount(): void
     {
-        $this->soals = Soal::all();
+        $this->soals = Soal::where('is_active', true)->get();
         $this->totalSoal = $this->soals->count();
-        
+
         if ($this->totalSoal > 0) {
-            $this->loadJawaban();
+            $this->totalBatches = (int) ceil($this->totalSoal / $this->batchSize);
+            $this->loadBatch();
         }
     }
 
-    public function mulaiTes()
+    public function mulaiTes(): void
     {
         $this->hasStarted = true;
 
         $answeredCount = DraftJawaban::where('user_id', Auth::id())->count();
-        
+
         if ($answeredCount > 0 && $answeredCount < $this->totalSoal) {
-            $this->currentIndex = $answeredCount;
-            $this->loadJawaban();
+            // Lanjut dari batch terakhir yang belum penuh
+            $this->currentBatch = (int) floor($answeredCount / $this->batchSize);
+            $this->currentBatch = min($this->currentBatch, $this->totalBatches - 1);
         }
+
+        $this->loadBatch();
     }
 
-    public function reviewTes()
+    public function reviewTes(): void
     {
         $this->hasStarted = true;
-        $this->currentIndex = 0;
-        $this->loadJawaban();
+        $this->currentBatch = 0;
+        $this->loadBatch();
     }
 
-    public function loadJawaban()
+    /** Muat jawaban yang sudah tersimpan untuk batch aktif */
+    public function loadBatch(): void
     {
-        $soalAktif = $this->soals[$this->currentIndex];
-        $draft = DraftJawaban::where('user_id', Auth::id())
-            ->where('soal_id', $soalAktif->id)
-            ->first();
+        $soalIds = $this->getCurrentBatchSoals()->pluck('id')->toArray();
 
-        $this->jawabanTerpilih = $draft ? (int) $draft->jawaban : null;
-        $this->isSaved = $draft ? true : false;
+        $existing = DraftJawaban::where('user_id', Auth::id())
+            ->whereIn('soal_id', $soalIds)
+            ->pluck('jawaban', 'soal_id')
+            ->toArray();
+
+        $this->jawabanBatch = [];
+        foreach ($soalIds as $id) {
+            $this->jawabanBatch[(string) $id] = isset($existing[$id]) ? (int) $existing[$id] : null;
+        }
     }
 
-    public function pilihJawaban($nilai)
+    public function pilihJawaban(int $soalId, int $nilai): void
     {
-        $this->jawabanTerpilih = $nilai;
-        $soalAktif = $this->soals[$this->currentIndex];
+        $this->jawabanBatch[(string) $soalId] = $nilai;
 
         DraftJawaban::updateOrCreate(
-            ['user_id' => Auth::id(), 'soal_id' => $soalAktif->id],
+            ['user_id' => Auth::id(), 'soal_id' => $soalId],
             ['jawaban' => $nilai]
         );
-
-        $this->isSaved = true;
     }
 
-    public function next()
+    public function next(): void
     {
-        if (!is_null($this->jawabanTerpilih)) {
-            if ($this->currentIndex < $this->totalSoal - 1) {
-                $this->jawabanTerpilih = null; 
-                $this->isSaved = false;
-                $this->currentIndex++;
-                $this->loadJawaban();
-            } else {
+        if ($this->currentBatch < $this->totalBatches - 1) {
+            $this->currentBatch++;
+            $this->loadBatch();
+        } else {
+            redirect()->route('mahasiswa.results');
+        }
+    }
 
-                return redirect()->route('mahasiswa.results');
+    public function prev(): void
+    {
+        if ($this->currentBatch > 0) {
+            $this->currentBatch--;
+            $this->loadBatch();
+        }
+    }
+
+    public function getCurrentBatchSoals(): Collection
+    {
+        $start = $this->currentBatch * $this->batchSize;
+
+        return $this->soals->slice($start, $this->batchSize)->values();
+    }
+
+    public function batchIsComplete(): bool
+    {
+        $batchSoals = $this->getCurrentBatchSoals();
+
+        foreach ($batchSoals as $soal) {
+            if (is_null($this->jawabanBatch[(string) $soal->id] ?? null)) {
+                return false;
             }
         }
+
+        return true;
     }
 
-    public function prev()
+    public function render(): View
     {
-        if ($this->currentIndex > 0) {
-            $this->jawabanTerpilih = null;
-            $this->isSaved = false;
-            
-            $this->currentIndex--;
-            $this->loadJawaban();
-        }
-    }
+        $batchSoals = $this->getCurrentBatchSoals();
+        $terjawab = collect($this->jawabanBatch)->filter(fn ($v) => ! is_null($v))->count();
+        $totalDijawab = DraftJawaban::where('user_id', Auth::id())->count();
 
-    public function render()
-    {
+        $persentase = $this->totalSoal > 0
+            ? round(($totalDijawab / $this->totalSoal) * 100)
+            : 0;
+
         return view('livewire.mahasiswa.tes.tes-wizard', [
-            'soalAktif' => $this->totalSoal > 0 ? $this->soals[$this->currentIndex] : null,
-            'persentase' => $this->totalSoal > 0 ? (($this->currentIndex + 1) / $this->totalSoal) * 100 : 0,
+            'batchSoals' => $batchSoals,
+            'persentase' => $persentase,
+            'terjawab' => $terjawab,
+            'isLastBatch' => $this->currentBatch >= $this->totalBatches - 1,
+            'isComplete' => $this->batchIsComplete(),
         ])->layout('layouts.blank');
     }
 }
