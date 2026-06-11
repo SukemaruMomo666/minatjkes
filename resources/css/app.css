@@ -214,3 +214,12 @@ select:focus[data-flux-control] {
 .sim-bar-fill-anim.animated {
     width: var(--bar-width);
 }
+
+/* Likert circles — variasi ukuran di desktop */
+@media (min-width: 768px) {
+    .sim-likert-circle:nth-child(1) { width: 28px !important; height: 28px !important; }
+    .sim-likert-circle:nth-child(2) { width: 22px !important; height: 22px !important; }
+    .sim-likert-circle:nth-child(3) { width: 16px !important; height: 16px !important; }
+    .sim-likert-circle:nth-child(4) { width: 22px !important; height: 22px !important; }
+    .sim-likert-circle:nth-child(5) { width: 28px !important; height: 28px !important; }
+}

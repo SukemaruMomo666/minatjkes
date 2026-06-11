@@ -2,10 +2,13 @@
 
 namespace App\Livewire\Admin\StudentManagement;
 
+use App\Enums\UserRole;
+use App\Models\Kelas;
 use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Hash;
 
 class Index extends Component
 {
@@ -13,62 +16,114 @@ class Index extends Component
 
     protected $paginationTheme = 'tailwind';
 
-    public $isModalOpen = false;
-    public $nama, $email, $nim_nidn, $password;
+    public bool $isModalOpen = false;
 
-    public function updatingSearch()
+    public ?int $editId = null;
+
+    public string $nama = '';
+
+    public string $email = '';
+
+    public string $nim_nidn = '';
+
+    public string $password = '';
+
+    public ?int $kelas_id = null;
+
+    public function updatingSearch(): void
     {
         $this->resetPage();
     }
 
-    public function openModal()
+    public function openModal(?int $id = null): void
     {
         $this->resetForm();
+
+        if ($id) {
+            $student = User::findOrFail($id);
+            $this->editId = $student->id;
+            $this->nama = $student->nama ?? '';
+            $this->email = $student->email ?? '';
+            $this->nim_nidn = $student->nim_nidn ?? '';
+            $this->kelas_id = $student->kelas_id;
+        }
+
         $this->isModalOpen = true;
     }
 
-    public function closeModal()
+    public function closeModal(): void
     {
         $this->isModalOpen = false;
+        $this->resetForm();
     }
 
-    private function resetForm()
+    private function resetForm(): void
     {
+        $this->editId = null;
         $this->nama = '';
         $this->email = '';
         $this->nim_nidn = '';
         $this->password = '';
+        $this->kelas_id = null;
+        $this->resetValidation();
     }
 
-    public function simpanMahasiswa()
+    public function simpanMahasiswa(): void
     {
-        $this->validate([
+        $rules = [
             'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'nim_nidn' => 'required|string|unique:users,nim_nidn',
-            'password' => 'required|min:6',
-        ]);
+            'nim_nidn' => 'required|string|unique:users,nim_nidn'.($this->editId ? ",{$this->editId}" : ''),
+            'kelas_id' => 'nullable|exists:kelas,id',
+        ];
 
-        User::create([
+        if (! $this->editId) {
+            $rules['email'] = 'nullable|email|unique:users,email';
+            $rules['password'] = 'required|min:6';
+        } else {
+            $rules['email'] = 'nullable|email|unique:users,email,'.$this->editId;
+        }
+
+        $this->validate($rules);
+
+        $data = [
             'nama' => $this->nama,
-            'email' => $this->email,
             'nim_nidn' => $this->nim_nidn,
-            'password' => Hash::make($this->password),
-            'role' => 'mahasiswa', 
-        ]);
+            'email' => $this->email ?: null,
+            'kelas_id' => $this->kelas_id ?: null,
+            'role' => UserRole::Mahasiswa,
+        ];
+
+        if (! $this->editId) {
+            $data['password'] = Hash::make($this->password);
+            User::create($data);
+            session()->flash('message', 'Mahasiswa berhasil ditambahkan.');
+        } else {
+            if ($this->password) {
+                $data['password'] = Hash::make($this->password);
+            }
+            User::findOrFail($this->editId)->update($data);
+            session()->flash('message', 'Data mahasiswa berhasil diperbarui.');
+        }
 
         $this->closeModal();
-        session()->flash('message', 'Data Mahasiswa berhasil ditambahkan.');
     }
 
-    public function render()
+    public function hapus(int $id): void
     {
-        $students = User::whereIn('role', ['mahasiswa', 'user'])
-                        ->orderBy('created_at', 'desc')
-                        ->paginate(10);
+        User::findOrFail($id)->delete();
+        session()->flash('message', 'Mahasiswa berhasil dihapus.');
+    }
+
+    public function render(): View
+    {
+        $students = User::with('kelas')
+            ->where('role', UserRole::Mahasiswa)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return view('livewire.admin.student-management.index', [
-            'students' => $students
+            'students' => $students,
+            'kelasList' => Kelas::where('is_active', true)->orderBy('nama_kelas')->get(),
         ])->layout('layouts.blank');
     }
 }

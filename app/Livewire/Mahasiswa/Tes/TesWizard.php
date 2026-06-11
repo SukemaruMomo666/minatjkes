@@ -4,18 +4,22 @@ namespace App\Livewire\Mahasiswa\Tes;
 
 use App\Models\DraftJawaban;
 use App\Models\Soal;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class TesWizard extends Component
 {
+    use WithFileUploads;
+
     public $soals;
 
     public bool $hasStarted = false;
 
-    public int $batchSize = 6;
+    public int $batchSize = 5;
 
     public int $currentBatch = 0;
 
@@ -26,10 +30,19 @@ class TesWizard extends Component
     /** @var array<string, int|null> soal_id => nilai */
     public array $jawabanBatch = [];
 
+    public $fileBakat;
+
     public function mount(): void
     {
         $this->soals = Soal::where('is_active', true)->get();
         $this->totalSoal = $this->soals->count();
+
+        $answeredCount = DraftJawaban::where('user_id', Auth::id())->count();
+        if ($this->totalSoal > 0 && $answeredCount >= $this->totalSoal) {
+            $this->redirectRoute('mahasiswa.results');
+
+            return;
+        }
 
         if ($this->totalSoal > 0) {
             $this->totalBatches = (int) ceil($this->totalSoal / $this->batchSize);
@@ -40,15 +53,12 @@ class TesWizard extends Component
     public function mulaiTes(): void
     {
         $this->hasStarted = true;
-
         $answeredCount = DraftJawaban::where('user_id', Auth::id())->count();
 
         if ($answeredCount > 0 && $answeredCount < $this->totalSoal) {
-            // Lanjut dari batch terakhir yang belum penuh
             $this->currentBatch = (int) floor($answeredCount / $this->batchSize);
             $this->currentBatch = min($this->currentBatch, $this->totalBatches - 1);
         }
-
         $this->loadBatch();
     }
 
@@ -63,7 +73,6 @@ class TesWizard extends Component
     public function loadBatch(): void
     {
         $soalIds = $this->getCurrentBatchSoals()->pluck('id')->toArray();
-
         $existing = DraftJawaban::where('user_id', Auth::id())
             ->whereIn('soal_id', $soalIds)
             ->pluck('jawaban', 'soal_id')
@@ -90,8 +99,6 @@ class TesWizard extends Component
         if ($this->currentBatch < $this->totalBatches - 1) {
             $this->currentBatch++;
             $this->loadBatch();
-        } else {
-            redirect()->route('mahasiswa.results');
         }
     }
 
@@ -101,6 +108,23 @@ class TesWizard extends Component
             $this->currentBatch--;
             $this->loadBatch();
         }
+    }
+
+    public function submitFinal()
+    {
+        if ($this->fileBakat) {
+            $this->validate([
+                'fileBakat' => 'mimes:pdf,jpg,jpeg,png|max:2048', // Maksimal 2MB
+            ]);
+
+            $path = $this->fileBakat->store('bukti_bakat', 'public');
+
+            $user = User::find(Auth::id());
+            $user->update(['file_bakat' => $path]);
+        }
+
+        // Arahkan ke halaman hasil
+        return redirect()->route('mahasiswa.results');
     }
 
     public function getCurrentBatchSoals(): Collection
@@ -113,7 +137,6 @@ class TesWizard extends Component
     public function batchIsComplete(): bool
     {
         $batchSoals = $this->getCurrentBatchSoals();
-
         foreach ($batchSoals as $soal) {
             if (is_null($this->jawabanBatch[(string) $soal->id] ?? null)) {
                 return false;
