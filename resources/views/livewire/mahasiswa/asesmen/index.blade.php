@@ -142,21 +142,6 @@
                             </div>
                         @endif
 
-                        <div class="grid grid-cols-3 gap-3 mb-6">
-                            <div class="p-3 rounded-xl text-center" style="background-color:rgba(45,63,107,0.06);">
-                                <p class="text-lg font-bold" style="color:#1A2340;">{{ $totalSoalMinat }}</p>
-                                <p class="text-[10px] font-semibold" style="color:#6B7494;">Total Soal</p>
-                            </div>
-                            <div class="p-3 rounded-xl text-center" style="background-color:rgba(45,63,107,0.06);">
-                                <p class="text-lg font-bold" style="color:#1A2340;">{{ $totalDijawabMinat }}</p>
-                                <p class="text-[10px] font-semibold" style="color:#6B7494;">Terjawab</p>
-                            </div>
-                            <div class="p-3 rounded-xl text-center" style="background-color:rgba(45,63,107,0.06);">
-                                <p class="text-lg font-bold" style="color:#1A2340;">{{ $totalSoalMinat - $totalDijawabMinat }}</p>
-                                <p class="text-[10px] font-semibold" style="color:#6B7494;">Tersisa</p>
-                            </div>
-                        </div>
-
                         <div class="flex flex-col sm:flex-row gap-3">
                             @if($statusMinat === 'selesai')
                                 <a href="{{ route('mahasiswa.results') }}"
@@ -224,19 +209,6 @@
                             Myers-Briggs Type Indicator (MBTI) mengidentifikasi 16 tipe kepribadian berdasarkan 4 dimensi: Extraversion/Introversion, Sensing/Intuition, Thinking/Feeling, dan Judging/Perceiving.
                         </p>
 
-                        @if($statusMbti !== 'belum')
-                            <div class="mb-5">
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <span class="text-xs font-semibold" style="color:#6B7494;">Progress</span>
-                                    <span class="text-xs font-bold" style="color:#C8922A;">{{ $totalDijawabMbti }}/{{ $totalSoalMbti }} soal</span>
-                                </div>
-                                <div class="h-2 rounded-full overflow-hidden" style="background-color:rgba(26,35,64,0.08);">
-                                    <div class="h-full rounded-full transition-all"
-                                         style="width:{{ $progressMbti }}%;background-color:{{ $statusMbti === 'selesai' ? '#2E7D55' : '#C8922A' }};"></div>
-                                </div>
-                                <p class="text-[10px] mt-1 font-semibold" style="color:{{ $statusMbti === 'selesai' ? '#2E7D55' : '#C8922A' }};">{{ $progressMbti }}% selesai</p>
-                            </div>
-                        @endif
 
                         <div class="grid grid-cols-4 gap-2 mb-6">
                             @foreach([['E/I', 'Energi'], ['S/N', 'Informasi'], ['T/F', 'Keputusan'], ['J/P', 'Gaya Hidup']] as [$dim, $label])
