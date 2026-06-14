@@ -4,16 +4,21 @@ namespace App\Livewire\Dosen\Dashboard;
 
 use App\Enums\UserRole;
 use App\Models\DraftJawaban;
+use App\Models\JawabanMbti;
 use App\Models\Kelas;
 use App\Models\Soal;
+use App\Models\SoalMbti;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Index extends Component
 {
-    public $dosenNama = '';
+    public string $dosenNama = '';
+
+    public string $namaKelas = '';
 
     public int $totalMahasiswa = 0;
 
@@ -31,6 +36,10 @@ class Index extends Component
 
     public array $petaKompetensi = [];
 
+    public ?int $selectedMhsId = null;
+
+    public array $detailData = [];
+
     public function mount(): void
     {
         $this->dosenNama = Auth::user()->nama;
@@ -39,59 +48,118 @@ class Index extends Component
 
     private function kalkulasiData(): void
     {
-        $totalSoal = Soal::where('is_active', true)->count();
+        $totalSoalMinat = Soal::where('is_active', true)->count();
+        $totalSoalMbti = SoalMbti::where('is_active', true)->count();
 
-        // Cari kelas yang diampu dosen ini
         $kelas = Kelas::where('dosen_wali_id', Auth::id())->first();
+        $this->namaKelas = $kelas?->nama_kelas ?? '';
 
         if ($kelas) {
             $mahasiswas = User::where('role', UserRole::Mahasiswa)
                 ->where('kelas_id', $kelas->id)
+                ->orderBy('nama')
                 ->get();
         } else {
-            // Fallback: tampilkan semua mahasiswa
-            $mahasiswas = User::where('role', UserRole::Mahasiswa)->get();
+            $mahasiswas = User::where('role', UserRole::Mahasiswa)->orderBy('nama')->get();
         }
 
         $this->totalMahasiswa = $mahasiswas->count();
 
-        if ($totalSoal === 0 || $this->totalMahasiswa === 0) {
+        if ($totalSoalMinat === 0 || $this->totalMahasiswa === 0) {
             return;
         }
+
+        $mhsIds = $mahasiswas->pluck('id');
+
+        // Batch load semua jawaban minat bakat
+        $allJawabansMinat = DraftJawaban::with('soal.kategori')
+            ->whereIn('user_id', $mhsIds)
+            ->get()
+            ->groupBy('user_id');
+
+        // Batch load semua jawaban MBTI
+        $allJawabsMbti = JawabanMbti::with('soalMbti')
+            ->whereIn('user_id', $mhsIds)
+            ->get()
+            ->groupBy('user_id');
 
         $totalKecocokan = 0;
         $rekapDistribusi = [];
         $rekapKompetensi = [];
 
         foreach ($mahasiswas as $mhs) {
-            $jawabans = DraftJawaban::with('soal.kategori')
-                ->where('user_id', $mhs->id)
-                ->get();
+            $jawabansMinat = $allJawabansMinat[$mhs->id] ?? collect();
+            $jawabansMbti = $allJawabsMbti[$mhs->id] ?? collect();
 
-            $jumlahDijawab = $jawabans->count();
+            $jumlahDijawabMinat = $jawabansMinat->count();
+            $jumlahDijawabMbti = $jawabansMbti->count();
 
-            $status = 'Belum Mulai';
-            $isSelesai = false;
-
-            if ($jumlahDijawab > 0 && $jumlahDijawab < $totalSoal) {
-                $status = 'Proses ('.round(($jumlahDijawab / $totalSoal) * 100).'%)';
-                $this->sedangProses++;
-            } elseif ($jumlahDijawab >= $totalSoal) {
-                $status = 'Selesai';
-                $isSelesai = true;
-                $this->asesmenSelesai++;
-            } else {
+            // Status minat bakat
+            if ($jumlahDijawabMinat === 0) {
+                $statusMinat = 'Belum Mulai';
                 $this->belumMulai++;
+            } elseif ($jumlahDijawabMinat < $totalSoalMinat) {
+                $statusMinat = 'Proses ('.round(($jumlahDijawabMinat / $totalSoalMinat) * 100).'%)';
+                $this->sedangProses++;
+            } else {
+                $statusMinat = 'Selesai';
+                $this->asesmenSelesai++;
             }
 
+            // Status MBTI
+            if ($totalSoalMbti === 0 || $jumlahDijawabMbti === 0) {
+                $statusMbti = 'Belum Mulai';
+            } elseif ($jumlahDijawabMbti < $totalSoalMbti) {
+                $statusMbti = 'Proses ('.round(($jumlahDijawabMbti / $totalSoalMbti) * 100).'%)';
+            } else {
+                $statusMbti = 'Selesai';
+            }
+
+            // Hitung MBTI result
+            $mbtiResult = '-';
+            if ($jawabansMbti->isNotEmpty()) {
+                $mbtiSkor = ['E' => 0, 'I' => 0, 'S' => 0, 'N' => 0, 'T' => 0, 'F' => 0, 'J' => 0, 'P' => 0];
+                foreach ($jawabansMbti as $jwb) {
+                    if ($jwb->soalMbti) {
+                        $dimensi = $jwb->soalMbti->dimensi;
+                        $pilihan = $jwb->pilihan;
+                        if ($dimensi === 'EI') {
+                            $pilihan === 'A' ? $mbtiSkor['E']++ : $mbtiSkor['I']++;
+                        }
+                        if ($dimensi === 'SN') {
+                            $pilihan === 'A' ? $mbtiSkor['S']++ : $mbtiSkor['N']++;
+                        }
+                        if ($dimensi === 'TF') {
+                            $pilihan === 'A' ? $mbtiSkor['T']++ : $mbtiSkor['F']++;
+                        }
+                        if ($dimensi === 'JP') {
+                            $pilihan === 'A' ? $mbtiSkor['J']++ : $mbtiSkor['P']++;
+                        }
+                    }
+                }
+                if ($jumlahDijawabMbti >= $totalSoalMbti && $totalSoalMbti > 0) {
+                    $mbtiResult = ($mbtiSkor['E'] >= $mbtiSkor['I'] ? 'E' : 'I')
+                        .($mbtiSkor['S'] >= $mbtiSkor['N'] ? 'S' : 'N')
+                        .($mbtiSkor['T'] >= $mbtiSkor['F'] ? 'T' : 'F')
+                        .($mbtiSkor['J'] >= $mbtiSkor['P'] ? 'J' : 'P');
+                } else {
+                    $mbtiResult = 'Proses';
+                }
+            }
+
+            // Hitung skor per kategori minat bakat
             $skorMentah = [];
-            foreach ($jawabans as $jawaban) {
+            foreach ($jawabansMinat as $jawaban) {
                 if ($jawaban->soal && $jawaban->soal->kategori) {
                     $namaKat = $jawaban->soal->kategori->nama_kategori;
                     if (! isset($skorMentah[$namaKat])) {
                         $skorMentah[$namaKat] = ['total' => 0, 'jumlah' => 0];
                     }
-                    $skorMentah[$namaKat]['total'] += (int) $jawaban->jawaban;
+                    $nilai = (int) $jawaban->jawaban;
+                    if ($jawaban->soal->is_unfav) {
+                        $nilai = 5 - $nilai;
+                    }
+                    $skorMentah[$namaKat]['total'] += $nilai;
                     $skorMentah[$namaKat]['jumlah']++;
                 }
             }
@@ -100,7 +168,7 @@ class Index extends Component
             $skorTertinggi = 0;
 
             foreach ($skorMentah as $nama => $data) {
-                $maxSkor = $data['jumlah'] * 5;
+                $maxSkor = $data['jumlah'] * 4;
                 $pct = $maxSkor > 0 ? round(($data['total'] / $maxSkor) * 100) : 0;
 
                 if (! isset($rekapKompetensi[$nama])) {
@@ -114,21 +182,24 @@ class Index extends Component
                 }
             }
 
-            if ($isSelesai) {
+            if ($statusMinat === 'Selesai') {
                 $totalKecocokan += $skorTertinggi;
                 $rekapDistribusi[$kategoriTertinggi] = ($rekapDistribusi[$kategoriTertinggi] ?? 0) + 1;
             }
 
-            if ($jumlahDijawab > 0) {
-                $this->hasilAsesmen[] = [
-                    'nama' => $mhs->nama ?? 'Mahasiswa',
-                    'nim' => $mhs->nim_nidn ?? '-',
-                    'kelas' => $kelas?->nama_kelas ?? '-',
-                    'kategori_utama' => $kategoriTertinggi,
-                    'skor_utama' => $skorTertinggi,
-                    'status' => $status,
-                ];
-            }
+            $this->hasilAsesmen[] = [
+                'user_id' => $mhs->id,
+                'nama' => $mhs->nama ?? 'Mahasiswa',
+                'nim' => $mhs->nim_nidn ?? '-',
+                'kelas' => $kelas?->nama_kelas ?? '-',
+                'kategori_utama' => $kategoriTertinggi,
+                'skor_utama' => $skorTertinggi,
+                'status_minat' => $statusMinat,
+                'status_mbti' => $statusMbti,
+                'mbti_result' => $mbtiResult,
+                'file_akademik' => $mhs->file_bakat_akademik,
+                'file_non_akademik' => $mhs->file_bakat_non_akademik,
+            ];
         }
 
         if ($this->asesmenSelesai > 0) {
@@ -151,6 +222,145 @@ class Index extends Component
             'labels' => $radarLabels,
             'data' => $radarData,
         ];
+    }
+
+    public function openDetail(int $mhsId): void
+    {
+        $mhs = User::with('kelas')->find($mhsId);
+        if (! $mhs) {
+            return;
+        }
+
+        $totalSoalMinat = Soal::where('is_active', true)->count();
+        $totalSoalMbti = SoalMbti::where('is_active', true)->count();
+
+        $jawabansMinat = DraftJawaban::with('soal.kategori')->where('user_id', $mhsId)->get();
+        $jawabansMbti = JawabanMbti::with('soalMbti')->where('user_id', $mhsId)->get();
+
+        $jumlahDijawabMinat = $jawabansMinat->count();
+        $jumlahDijawabMbti = $jawabansMbti->count();
+
+        // Status minat
+        if ($jumlahDijawabMinat === 0) {
+            $statusMinat = 'Belum Mulai';
+        } elseif ($jumlahDijawabMinat < $totalSoalMinat) {
+            $statusMinat = 'Proses ('.round(($jumlahDijawabMinat / $totalSoalMinat) * 100).'%)';
+        } else {
+            $statusMinat = 'Selesai';
+        }
+
+        // Status MBTI + result
+        $mbtiResult = '-';
+        if ($jumlahDijawabMbti === 0) {
+            $statusMbti = 'Belum Mulai';
+        } elseif ($jumlahDijawabMbti < $totalSoalMbti) {
+            $statusMbti = 'Proses ('.round(($jumlahDijawabMbti / $totalSoalMbti) * 100).'%)';
+            $mbtiResult = 'Proses';
+        } else {
+            $statusMbti = 'Selesai';
+            $mbtiSkor = ['E' => 0, 'I' => 0, 'S' => 0, 'N' => 0, 'T' => 0, 'F' => 0, 'J' => 0, 'P' => 0];
+            foreach ($jawabansMbti as $jwb) {
+                if ($jwb->soalMbti) {
+                    $d = $jwb->soalMbti->dimensi;
+                    $p = $jwb->pilihan;
+                    if ($d === 'EI') {
+                        $p === 'A' ? $mbtiSkor['E']++ : $mbtiSkor['I']++;
+                    }
+                    if ($d === 'SN') {
+                        $p === 'A' ? $mbtiSkor['S']++ : $mbtiSkor['N']++;
+                    }
+                    if ($d === 'TF') {
+                        $p === 'A' ? $mbtiSkor['T']++ : $mbtiSkor['F']++;
+                    }
+                    if ($d === 'JP') {
+                        $p === 'A' ? $mbtiSkor['J']++ : $mbtiSkor['P']++;
+                    }
+                }
+            }
+            $mbtiResult = ($mbtiSkor['E'] >= $mbtiSkor['I'] ? 'E' : 'I')
+                .($mbtiSkor['S'] >= $mbtiSkor['N'] ? 'S' : 'N')
+                .($mbtiSkor['T'] >= $mbtiSkor['F'] ? 'T' : 'F')
+                .($mbtiSkor['J'] >= $mbtiSkor['P'] ? 'J' : 'P');
+        }
+
+        // Hitung skor per kategori
+        $skorKategori = [];
+        foreach ($jawabansMinat as $jawaban) {
+            if ($jawaban->soal && $jawaban->soal->kategori) {
+                $namaKat = $jawaban->soal->kategori->nama_kategori;
+                if (! isset($skorKategori[$namaKat])) {
+                    $skorKategori[$namaKat] = ['total' => 0, 'jumlah' => 0];
+                }
+                $nilai = (int) $jawaban->jawaban;
+                if ($jawaban->soal->is_unfav) {
+                    $nilai = 5 - $nilai;
+                }
+                $skorKategori[$namaKat]['total'] += $nilai;
+                $skorKategori[$namaKat]['jumlah']++;
+            }
+        }
+
+        $skorPersen = [];
+        foreach ($skorKategori as $nama => $data) {
+            $maxSkor = $data['jumlah'] * 4;
+            $skorPersen[$nama] = $maxSkor > 0 ? round(($data['total'] / $maxSkor) * 100) : 0;
+        }
+        arsort($skorPersen);
+
+        $this->detailData = [
+            'nama' => $mhs->nama ?? '-',
+            'nim' => $mhs->nim_nidn ?? '-',
+            'kelas' => $mhs->kelas?->nama_kelas ?? '-',
+            'jenis_kelamin' => match ($mhs->jenis_kelamin) {
+                'laki-laki' => 'Laki-laki',
+                'perempuan' => 'Perempuan',
+                default => '-',
+            },
+            'status_minat' => $statusMinat,
+            'status_mbti' => $statusMbti,
+            'mbti_result' => $mbtiResult,
+            'skor_kategori' => $skorPersen,
+            'file_akademik' => $mhs->file_bakat_akademik,
+            'file_non_akademik' => $mhs->file_bakat_non_akademik,
+        ];
+
+        $this->selectedMhsId = $mhsId;
+    }
+
+    public function closeDetail(): void
+    {
+        $this->selectedMhsId = null;
+        $this->detailData = [];
+    }
+
+    public function exportCsv(): StreamedResponse
+    {
+        $rows = $this->hasilAsesmen;
+
+        return response()->streamDownload(function () use ($rows) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['No', 'Nama', 'NIM', 'Kelas', 'Minat Utama', 'Skor (%)', 'Status Minat Bakat', 'Status MBTI', 'Hasil MBTI', 'Sertifikat Akademik', 'Sertifikat Non-Akademik']);
+
+            foreach ($rows as $i => $mhs) {
+                fputcsv($handle, [
+                    $i + 1,
+                    $mhs['nama'],
+                    $mhs['nim'],
+                    $mhs['kelas'],
+                    $mhs['kategori_utama'],
+                    $mhs['skor_utama'],
+                    $mhs['status_minat'],
+                    $mhs['status_mbti'],
+                    $mhs['mbti_result'],
+                    $mhs['file_akademik'] ? 'Ada' : 'Belum',
+                    $mhs['file_non_akademik'] ? 'Ada' : 'Belum',
+                ]);
+            }
+
+            fclose($handle);
+        }, 'rekap-mahasiswa-'.$this->namaKelas.'.csv', [
+            'Content-Type' => 'text/csv',
+        ]);
     }
 
     public function render(): View

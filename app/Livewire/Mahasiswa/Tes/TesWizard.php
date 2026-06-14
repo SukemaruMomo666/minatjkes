@@ -4,22 +4,15 @@ namespace App\Livewire\Mahasiswa\Tes;
 
 use App\Models\DraftJawaban;
 use App\Models\Soal;
-use App\Models\User;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 
 class TesWizard extends Component
 {
-    use WithFileUploads;
-
-    public $soals;
-
     public bool $hasStarted = false;
 
-    public int $batchSize = 5;
+    public int $batchSize = 10;
 
     public int $currentBatch = 0;
 
@@ -30,35 +23,49 @@ class TesWizard extends Component
     /** @var array<string, int|null> soal_id => nilai */
     public array $jawabanBatch = [];
 
-    public $fileBakat;
+    public $shuffledSoalIds = [];
 
     public function mount(): void
     {
-        $this->soals = Soal::where('is_active', true)->get();
-        $this->totalSoal = $this->soals->count();
-
-        $answeredCount = DraftJawaban::where('user_id', Auth::id())->count();
-        if ($this->totalSoal > 0 && $answeredCount >= $this->totalSoal) {
-            $this->redirectRoute('mahasiswa.results');
-
-            return;
+        if (! session()->has('shuffled_soal_minat')) {
+            $ids = Soal::where('is_active', true)->inRandomOrder()->pluck('id')->toArray();
+            session()->put('shuffled_soal_minat', $ids);
         }
+
+        $this->shuffledSoalIds = session('shuffled_soal_minat');
+        $this->totalSoal = count($this->shuffledSoalIds);
 
         if ($this->totalSoal > 0) {
             $this->totalBatches = (int) ceil($this->totalSoal / $this->batchSize);
-            $this->loadBatch();
         }
+    }
+
+    public function getBatchSoalsProperty()
+    {
+        if (empty($this->shuffledSoalIds)) {
+            return collect([]);
+        }
+
+        $currentIds = array_slice($this->shuffledSoalIds, $this->currentBatch * $this->batchSize, $this->batchSize);
+
+        return Soal::whereIn('id', $currentIds)
+            ->get()
+            ->sortBy(function ($model) use ($currentIds) {
+                return array_search($model->id, $currentIds);
+            })->values();
     }
 
     public function mulaiTes(): void
     {
         $this->hasStarted = true;
+
         $answeredCount = DraftJawaban::where('user_id', Auth::id())->count();
 
         if ($answeredCount > 0 && $answeredCount < $this->totalSoal) {
             $this->currentBatch = (int) floor($answeredCount / $this->batchSize);
             $this->currentBatch = min($this->currentBatch, $this->totalBatches - 1);
         }
+
         $this->loadBatch();
     }
 
@@ -69,10 +76,10 @@ class TesWizard extends Component
         $this->loadBatch();
     }
 
-    /** Muat jawaban yang sudah tersimpan untuk batch aktif */
     public function loadBatch(): void
     {
-        $soalIds = $this->getCurrentBatchSoals()->pluck('id')->toArray();
+        $soalIds = $this->batchSoals->pluck('id')->toArray();
+
         $existing = DraftJawaban::where('user_id', Auth::id())
             ->whereIn('soal_id', $soalIds)
             ->pluck('jawaban', 'soal_id')
@@ -86,12 +93,12 @@ class TesWizard extends Component
 
     public function pilihJawaban(int $soalId, int $nilai): void
     {
-        $this->jawabanBatch[(string) $soalId] = $nilai;
-
         DraftJawaban::updateOrCreate(
             ['user_id' => Auth::id(), 'soal_id' => $soalId],
             ['jawaban' => $nilai]
         );
+
+        $this->jawabanBatch[$soalId] = $nilai;
     }
 
     public function next(): void
@@ -110,34 +117,9 @@ class TesWizard extends Component
         }
     }
 
-    public function submitFinal()
-    {
-        if ($this->fileBakat) {
-            $this->validate([
-                'fileBakat' => 'mimes:pdf,jpg,jpeg,png|max:2048', // Maksimal 2MB
-            ]);
-
-            $path = $this->fileBakat->store('bukti_bakat', 'public');
-
-            $user = User::find(Auth::id());
-            $user->update(['file_bakat' => $path]);
-        }
-
-        // Arahkan ke halaman hasil
-        return redirect()->route('mahasiswa.results');
-    }
-
-    public function getCurrentBatchSoals(): Collection
-    {
-        $start = $this->currentBatch * $this->batchSize;
-
-        return $this->soals->slice($start, $this->batchSize)->values();
-    }
-
     public function batchIsComplete(): bool
     {
-        $batchSoals = $this->getCurrentBatchSoals();
-        foreach ($batchSoals as $soal) {
+        foreach ($this->batchSoals as $soal) {
             if (is_null($this->jawabanBatch[(string) $soal->id] ?? null)) {
                 return false;
             }
@@ -146,9 +128,20 @@ class TesWizard extends Component
         return true;
     }
 
+    public function submitFinal()
+    {
+        if (! $this->batchIsComplete()) {
+            return;
+        }
+
+        session()->forget('shuffled_soal_minat');
+
+        return redirect()->route('mahasiswa.tes.mbti');
+    }
+
     public function render(): View
     {
-        $batchSoals = $this->getCurrentBatchSoals();
+        $batchSoals = $this->batchSoals;
         $terjawab = collect($this->jawabanBatch)->filter(fn ($v) => ! is_null($v))->count();
         $totalDijawab = DraftJawaban::where('user_id', Auth::id())->count();
 

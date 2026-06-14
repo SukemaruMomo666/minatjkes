@@ -5,23 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project SIMINAT - Pemetaan Masa Depan Kesehatan</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>html { scroll-behavior: smooth; }</style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800 antialiased overflow-x-hidden">
 
     <header class="absolute top-0 w-full z-50 px-6 lg:px-12 py-6 flex justify-between items-center text-white">
         <div class="font-bold tracking-widest text-lg">PROJECT SIMINAT</div>
         <nav class="hidden md:flex space-x-8 text-sm font-medium">
-            <a href="#" class="text-white border-b-2 border-orange-500 pb-1">Beranda</a>
-            <a href="#" class="text-gray-300 hover:text-white transition">Tentang</a>
-            <a href="#" class="text-gray-300 hover:text-white transition">Fitur</a>
-            <a href="#" class="text-gray-300 hover:text-white transition">Kontak</a>
+            <a href="#beranda" class="text-white border-b-2 border-orange-500 pb-1">Beranda</a>
+            <a href="#tentang" class="text-gray-300 hover:text-white transition">Tentang</a>
+            <a href="#fitur" class="text-gray-300 hover:text-white transition">Fitur</a>
+            <a href="#kontak" class="text-gray-300 hover:text-white transition">Kontak</a>
         </nav>
         <div class="flex items-center space-x-4">
             <a href="{{ route('login') }}" class="text-sm font-medium bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition backdrop-blur-sm">Login</a>
         </div>
     </header>
 
-    <section class="relative pt-24 pb-32 lg:pt-36 lg:pb-40 bg-slate-900 px-4 sm:px-6 lg:px-8">
+    <section id="beranda" class="relative pt-24 pb-32 lg:pt-36 lg:pb-40 bg-slate-900 px-4 sm:px-6 lg:px-8">
         <div class="absolute inset-0 overflow-hidden">
             <div class="absolute -top-1/2 -right-1/4 w-[1000px] h-[1000px] rounded-full bg-slate-800/50 blur-3xl"></div>
         </div>
@@ -66,7 +67,7 @@
         </div>
     </section>
 
-    <section class="py-24 px-4 bg-gray-50">
+    <section id="fitur" class="py-24 px-4 bg-gray-50">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-sm font-bold tracking-widest text-gray-400 uppercase mb-3">Fitur Unggulan Kami</h2>
@@ -101,7 +102,7 @@
         </div>
     </section>
 
-    <section class="py-24 px-4 bg-white">
+    <section id="tentang" class="py-24 px-4 bg-white">
         <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div class="relative h-96 bg-slate-900 rounded-3xl overflow-hidden shadow-2xl">
                 <div class="absolute top-1/2 left-8 -translate-y-1/2 w-16 h-16 bg-[#D98324] rounded-full flex items-center justify-center shadow-lg">
@@ -177,7 +178,7 @@
         </div>
     </section>
 
-    <footer class="bg-[#3a4e6b] text-white">
+    <footer id="kontak" class="bg-[#3a4e6b] text-white">
         <div class="py-20 text-center px-4 border-b border-white/10">
             <h2 class="text-2xl font-bold mb-4">Siap Memetakan Masa Depan Anda?</h2>
             <p class="text-slate-300 mb-8 max-w-2xl mx-auto">Jangan biarkan karir kesehatan Anda berjalan tanpa arah. Bergabunglah dengan ribuan mahasiswa lainnya di PROJECT SIMINAT hari ini.</p>

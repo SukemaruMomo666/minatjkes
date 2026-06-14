@@ -30,7 +30,18 @@ class Index extends Component
 
     public ?int $kelas_id = null;
 
+    public string $jenis_kelamin = '';
+
+    public ?int $filterKelas = null;
+
+    public string $search = '';
+
     public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFilterKelas(): void
     {
         $this->resetPage();
     }
@@ -46,6 +57,7 @@ class Index extends Component
             $this->email = $student->email ?? '';
             $this->nim_nidn = $student->nim_nidn ?? '';
             $this->kelas_id = $student->kelas_id;
+            $this->jenis_kelamin = $student->jenis_kelamin ?? '';
         }
 
         $this->isModalOpen = true;
@@ -65,6 +77,7 @@ class Index extends Component
         $this->nim_nidn = '';
         $this->password = '';
         $this->kelas_id = null;
+        $this->jenis_kelamin = '';
         $this->resetValidation();
     }
 
@@ -74,6 +87,7 @@ class Index extends Component
             'nama' => 'required|string|max:255',
             'nim_nidn' => 'required|string|unique:users,nim_nidn'.($this->editId ? ",{$this->editId}" : ''),
             'kelas_id' => 'nullable|exists:kelas,id',
+            'jenis_kelamin' => 'nullable|in:laki-laki,perempuan',
         ];
 
         if (! $this->editId) {
@@ -90,6 +104,7 @@ class Index extends Component
             'nim_nidn' => $this->nim_nidn,
             'email' => $this->email ?: null,
             'kelas_id' => $this->kelas_id ?: null,
+            'jenis_kelamin' => $this->jenis_kelamin ?: null,
             'role' => UserRole::Mahasiswa,
         ];
 
@@ -118,7 +133,16 @@ class Index extends Component
     {
         $students = User::with('kelas')
             ->where('role', UserRole::Mahasiswa)
-            ->orderBy('created_at', 'desc')
+            ->when($this->filterKelas, fn ($q) => $q->where('kelas_id', $this->filterKelas))
+            ->when($this->search, fn ($q) => $q->where(function ($q) {
+                $q->where('users.nama', 'like', "%{$this->search}%")
+                    ->orWhere('users.nim_nidn', 'like', "%{$this->search}%");
+            }))
+
+            ->leftJoin('kelas', 'users.kelas_id', '=', 'kelas.id')
+            ->orderBy('kelas.nama_kelas')
+            ->orderBy('users.nama')
+            ->select('users.*')
             ->paginate(10);
 
         return view('livewire.admin.student-management.index', [

@@ -56,8 +56,8 @@
                     <div>
                         <flux:input 
                             name="nim_nidn" 
-                            label="Alamat Email / NIM / NIDN" 
-                            placeholder="nama@universitas.ac.id" 
+                            label="Username" 
+                            placeholder="Username" 
                             icon="envelope"
                             required 
                             autofocus 
@@ -66,13 +66,13 @@
 
                     <div>
                         <div class="flex justify-between items-center mb-1">
-                            <label class="block text-sm font-medium text-gray-700">Kata Sandi</label>
-                            <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-500">Forgot Password?</a>
+                            <label class="block text-sm font-medium text-gray-700">Password</label>
+                            <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-500"></a>
                         </div>
                         <flux:input 
                             type="password" 
                             name="password" 
-                            placeholder="Masukkan kata sandi (DDMMYYYY)" 
+                            placeholder="Password" 
                             icon="lock-closed"
                             required 
                         />
@@ -92,7 +92,7 @@
                     </div>
                 </form>
 
-                <div class="mt-8">
+                {{-- <div class="mt-8">
                     <div class="relative">
                         <div class="absolute inset-0 flex items-center">
                             <div class="w-full border-t border-gray-200"></div>
@@ -117,7 +117,7 @@
 
                 <p class="mt-8 text-center text-sm text-gray-600">
                     Don't have an account? <a href="#" class="font-medium text-[#D98324] hover:text-[#C2741E]">Register</a>
-                </p>
+                </p> --}}
 
             </div>
         </div>

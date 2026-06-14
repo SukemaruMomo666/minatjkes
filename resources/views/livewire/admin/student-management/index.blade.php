@@ -23,6 +23,38 @@
                 </div>
             @endif
 
+            {{-- Search & Filter --}}
+            <div class="mb-4 flex flex-wrap items-center gap-3">
+                <div class="relative">
+                    <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color:#6B7494;"></i>
+                    <input wire:model.live.debounce.300ms="search"
+                           type="text" placeholder="Cari nama atau NIM..."
+                           class="pl-9 pr-4 py-2 rounded-xl text-sm outline-none"
+                           style="border:1.5px solid rgba(26,35,64,0.15);background:#fff;color:#1A2340;min-width:220px;"
+                           onfocus="this.style.borderColor='#C8922A'"
+                           onblur="this.style.borderColor='rgba(26,35,64,0.15)'">
+                </div>
+
+                <select wire:model.live="filterKelas"
+                        class="px-3 py-2 rounded-xl text-sm outline-none"
+                        style="border:1.5px solid rgba(26,35,64,0.15);background:#fff;color:#1A2340;min-width:200px;"
+                        onfocus="this.style.borderColor='#C8922A'"
+                        onblur="this.style.borderColor='rgba(26,35,64,0.15)'">
+                    <option value="">Semua Kelas</option>
+                    @foreach($kelasList as $kelas)
+                        <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }} — Angkatan {{ $kelas->angkatan }}</option>
+                    @endforeach
+                </select>
+
+                @if($search || $filterKelas)
+                    <button wire:click="$set('search', ''); $set('filterKelas', null)"
+                            class="text-xs px-3 py-2 rounded-xl transition-all"
+                            style="background:rgba(180,69,47,0.08);color:#B4452F;border:1px solid rgba(180,69,47,0.2);">
+                        <i class="ti ti-x text-xs mr-1"></i>Reset
+                    </button>
+                @endif
+            </div>
+
             <div class="sim-card overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
@@ -31,6 +63,7 @@
                                 <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider" style="color:#6B7494;">Mahasiswa</th>
                                 <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider" style="color:#6B7494;">NIM</th>
                                 <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider" style="color:#6B7494;">Kelas</th>
+                                <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider" style="color:#6B7494;">Kelamin</th>
                                 <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider" style="color:#6B7494;">Email</th>
                                 <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider" style="color:#6B7494;">Terdaftar</th>
                                 <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider text-center" style="color:#6B7494;">Aksi</th>
@@ -63,6 +96,15 @@
                                             </span>
                                         @endif
                                     </td>
+                                    <td class="px-6 py-4 text-xs" style="color:#6B7494;">
+                                        @if($student->jenis_kelamin === 'laki-laki')
+                                            <span class="flex items-center gap-1"><i class="ti ti-gender-male text-sm" style="color:#2D3F6B;"></i> L</span>
+                                        @elseif($student->jenis_kelamin === 'perempuan')
+                                            <span class="flex items-center gap-1"><i class="ti ti-gender-female text-sm" style="color:#C8922A;"></i> P</span>
+                                        @else
+                                            <span style="color:#d1d5db;">—</span>
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4 text-sm" style="color:#6B7494;">{{ $student->email ?? '—' }}</td>
                                     <td class="px-6 py-4 text-xs" style="color:#6B7494;">
                                         {{ $student->created_at?->format('d M Y') }}
@@ -85,7 +127,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-10 text-center text-sm" style="color:#6B7494;">
+                                    <td colspan="7" class="px-6 py-10 text-center text-sm" style="color:#6B7494;">
                                         Belum ada data mahasiswa.
                                     </td>
                                 </tr>
@@ -161,6 +203,21 @@
                                 Belum ada kelas aktif. <a href="{{ route('admin.kelas') }}" class="font-semibold underline">Tambah kelas dulu</a>.
                             </p>
                         @endif
+                    </div>
+
+                    {{-- Jenis Kelamin --}}
+                    <div>
+                        <label class="block text-xs font-semibold mb-1" style="color:#1A2340;">Jenis Kelamin</label>
+                        <select wire:model="jenis_kelamin"
+                                class="w-full px-4 py-2.5 rounded-xl text-sm outline-none"
+                                style="border:1.5px solid rgba(26,35,64,0.15);background:#fff;color:#1A2340;"
+                                onfocus="this.style.borderColor='#C8922A'"
+                                onblur="this.style.borderColor='rgba(26,35,64,0.15)'">
+                            <option value="">— Pilih —</option>
+                            <option value="laki-laki">Laki-laki</option>
+                            <option value="perempuan">Perempuan</option>
+                        </select>
+                        @error('jenis_kelamin') <p class="text-xs mt-1" style="color:#B4452F;">{{ $message }}</p> @enderror
                     </div>
 
                     {{-- Email --}}

@@ -2,6 +2,7 @@
 
 use App\Livewire\Mahasiswa\Dashboard\Index;
 use App\Livewire\Mahasiswa\Hasil\ResultPage;
+use App\Livewire\Mahasiswa\Tes\TesMbti;
 use App\Livewire\Mahasiswa\Tes\TesWizard;
 use Illuminate\Support\Facades\Route;
 
@@ -14,8 +15,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Mahasiswa routes
     Route::get('/mahasiswa/dashboard', Index::class)->name('mahasiswa.dashboard');
+    Route::get('/mahasiswa/asesmen', App\Livewire\Mahasiswa\Asesmen\Index::class)->name('mahasiswa.asesmen');
     Route::get('/mahasiswa/results', ResultPage::class)->name('mahasiswa.results');
     Route::get('/mahasiswa/tes', TesWizard::class)->name('mahasiswa.tes');
+    Route::get('/tes/mbti', TesMbti::class)->name('mahasiswa.tes.mbti');
 
     // Dosen routes
     Route::get('/dosen/dashboard', App\Livewire\Dosen\Dashboard\Index::class)->name('dosen.dashboard');
