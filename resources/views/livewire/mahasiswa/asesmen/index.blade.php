@@ -163,7 +163,7 @@
                                    class="sim-btn-gold text-sm text-center justify-center">
                                     <i class="ti ti-report-analytics mr-1.5"></i> Lihat Hasil Tes
                                 </a>
-                                <a href="{{ route('mahasiswa.results') }}"
+                                <a href="{{ route('mahasiswa.tes') }}?isReviewMode=true"
                                    class="sim-btn-ghost text-sm text-center justify-center">
                                     <i class="ti ti-file-description mr-1.5"></i> Detail Jawaban
                                 </a>
@@ -253,7 +253,7 @@
                                    class="sim-btn-gold text-sm text-center justify-center">
                                     <i class="ti ti-report-analytics mr-1.5"></i> Lihat Hasil MBTI
                                 </a>
-                                <a href="{{ route('mahasiswa.results') }}"
+                                <a href="{{ route('mahasiswa.tes.mbti') }}?isReviewMode=true"
                                    class="sim-btn-ghost text-sm text-center justify-center">
                                     <i class="ti ti-file-description mr-1.5"></i> Detail Jawaban
                                 </a>

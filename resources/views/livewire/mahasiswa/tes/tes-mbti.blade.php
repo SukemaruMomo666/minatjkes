@@ -40,7 +40,14 @@
             </div>
             
             <div class="hidden md:flex items-center gap-3">
-                <span class="text-sm font-bold" style="color:#1A2340;">Tahap 2 dari 2</span>
+                @if($isReviewMode)
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold"
+                         style="background-color:rgba(200,146,42,0.12);color:#C8922A;border:1px solid rgba(200,146,42,0.25);">
+                        <i class="ti ti-eye text-sm"></i> Mode Tinjau — Jawaban Tidak Dapat Diubah
+                    </div>
+                @else
+                    <span class="text-sm font-bold" style="color:#1A2340;">Tahap 2 dari 2</span>
+                @endif
             </div>
         </header>
 
@@ -82,14 +89,23 @@
                             {{-- Pilihan A & B --}}
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 ml-7 md:ml-9">
                                 
-                                {{-- Tombol A --}}
-                                <button wire:click="pilihJawaban({{ $soal->id }}, 'A')"
-                                        class="text-left p-4 rounded-xl border-2 transition-all flex items-start gap-3 group"
-                                        style="
-                                            border-color: {{ $jawabanUser === 'A' ? '#C8922A' : 'rgba(26,35,64,0.1)' }};
-                                            background-color: {{ $jawabanUser === 'A' ? 'rgba(200,146,42,0.05)' : '#fff' }};
-                                        ">
-                                    <span class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold transition-colors"
+                                {{-- Opsi A --}}
+                                @if($isReviewMode)
+                                    <div class="text-left p-4 rounded-xl border-2 flex items-start gap-3"
+                                         style="
+                                             border-color: {{ $jawabanUser === 'A' ? '#C8922A' : 'rgba(26,35,64,0.1)' }};
+                                             background-color: {{ $jawabanUser === 'A' ? 'rgba(200,146,42,0.05)' : '#fff' }};
+                                             cursor: default;
+                                         ">
+                                @else
+                                    <button wire:click="pilihJawaban({{ $soal->id }}, 'A')"
+                                            class="text-left p-4 rounded-xl border-2 transition-all flex items-start gap-3 group"
+                                            style="
+                                                border-color: {{ $jawabanUser === 'A' ? '#C8922A' : 'rgba(26,35,64,0.1)' }};
+                                                background-color: {{ $jawabanUser === 'A' ? 'rgba(200,146,42,0.05)' : '#fff' }};
+                                            ">
+                                @endif
+                                    <span class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
                                           style="
                                               background-color: {{ $jawabanUser === 'A' ? '#C8922A' : 'rgba(26,35,64,0.05)' }};
                                               color: {{ $jawabanUser === 'A' ? '#fff' : '#1A2340' }};
@@ -97,16 +113,29 @@
                                     <span class="text-xs md:text-sm leading-relaxed mt-0.5" style="color:#1A2340;">
                                         {{ $soal->opsi_a }}
                                     </span>
-                                </button>
+                                @if($isReviewMode)
+                                    </div>
+                                @else
+                                    </button>
+                                @endif
 
-                                {{-- Tombol B --}}
-                                <button wire:click="pilihJawaban({{ $soal->id }}, 'B')"
-                                        class="text-left p-4 rounded-xl border-2 transition-all flex items-start gap-3 group"
-                                        style="
-                                            border-color: {{ $jawabanUser === 'B' ? '#C8922A' : 'rgba(26,35,64,0.1)' }};
-                                            background-color: {{ $jawabanUser === 'B' ? 'rgba(200,146,42,0.05)' : '#fff' }};
-                                        ">
-                                    <span class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold transition-colors"
+                                {{-- Opsi B --}}
+                                @if($isReviewMode)
+                                    <div class="text-left p-4 rounded-xl border-2 flex items-start gap-3"
+                                         style="
+                                             border-color: {{ $jawabanUser === 'B' ? '#C8922A' : 'rgba(26,35,64,0.1)' }};
+                                             background-color: {{ $jawabanUser === 'B' ? 'rgba(200,146,42,0.05)' : '#fff' }};
+                                             cursor: default;
+                                         ">
+                                @else
+                                    <button wire:click="pilihJawaban({{ $soal->id }}, 'B')"
+                                            class="text-left p-4 rounded-xl border-2 transition-all flex items-start gap-3 group"
+                                            style="
+                                                border-color: {{ $jawabanUser === 'B' ? '#C8922A' : 'rgba(26,35,64,0.1)' }};
+                                                background-color: {{ $jawabanUser === 'B' ? 'rgba(200,146,42,0.05)' : '#fff' }};
+                                            ">
+                                @endif
+                                    <span class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
                                           style="
                                               background-color: {{ $jawabanUser === 'B' ? '#C8922A' : 'rgba(26,35,64,0.05)' }};
                                               color: {{ $jawabanUser === 'B' ? '#fff' : '#1A2340' }};
@@ -114,20 +143,31 @@
                                     <span class="text-xs md:text-sm leading-relaxed mt-0.5" style="color:#1A2340;">
                                         {{ $soal->opsi_b }}
                                     </span>
-                                </button>
+                                @if($isReviewMode)
+                                    </div>
+                                @else
+                                    </button>
+                                @endif
                             </div>
 
                         </div>
                     @endforeach
                 </div>
 
-                {{-- Tombol Submit Akhir --}}
+                {{-- Tombol Bawah --}}
                 <div class="mt-8 flex justify-center">
-                    <button wire:click="submitFinal"
-                            @if(!$isComplete) disabled @endif
-                            class="sim-btn-gold px-8 py-3.5 w-full md:w-auto text-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                        Selesaikan Pemetaan & Lihat Rapor <i class="ti ti-check ml-2 text-lg"></i>
-                    </button>
+                    @if($isReviewMode)
+                        <a href="{{ route('mahasiswa.results') }}"
+                           class="sim-btn-gold px-8 py-3.5 w-full md:w-auto text-sm text-center">
+                            <i class="ti ti-arrow-left mr-2"></i> Kembali ke Hasil
+                        </a>
+                    @else
+                        <button wire:click="submitFinal"
+                                @if(!$isComplete) disabled @endif
+                                class="sim-btn-gold px-8 py-3.5 w-full md:w-auto text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                            Selesaikan Pemetaan & Lihat Rapor <i class="ti ti-check ml-2 text-lg"></i>
+                        </button>
+                    @endif
                 </div>
 
             </div>

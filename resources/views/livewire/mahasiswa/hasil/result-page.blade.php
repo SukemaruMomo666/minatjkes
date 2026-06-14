@@ -102,9 +102,16 @@
                 {{-- SECTION 1: PEMETAAN MINAT & BAKAT                     --}}
                 {{-- ══════════════════════════════════════════════════════ --}}
                 <div>
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-1 h-5 rounded-full" style="background-color:#C8922A;"></div>
-                        <h2 class="font-display text-base md:text-lg font-bold" style="color:#1A2340;">Pemetaan Minat &amp; Bakat</h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-5 rounded-full" style="background-color:#C8922A;"></div>
+                            <h2 class="font-display text-base md:text-lg font-bold" style="color:#1A2340;">Pemetaan Minat &amp; Bakat</h2>
+                        </div>
+                        <a href="{{ route('mahasiswa.tes') }}?isReviewMode=true"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:opacity-80"
+                           style="background-color:rgba(26,35,64,0.06);color:#1A2340;border:1px solid rgba(26,35,64,0.12);">
+                            <i class="ti ti-eye text-sm"></i> Tinjau Jawaban
+                        </a>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">

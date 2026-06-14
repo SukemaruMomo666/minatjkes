@@ -5,10 +5,14 @@ namespace App\Livewire\Mahasiswa\Tes;
 use App\Models\JawabanMbti;
 use App\Models\SoalMbti;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class TesMbti extends Component
 {
+    #[Url]
+    public bool $isReviewMode = false;
+
     public $soals;
 
     public $jawaban = [];

@@ -6,11 +6,15 @@ use App\Models\DraftJawaban;
 use App\Models\Soal;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class TesWizard extends Component
 {
     public bool $hasStarted = false;
+
+    #[Url]
+    public bool $isReviewMode = false;
 
     public int $batchSize = 10;
 
@@ -28,7 +32,9 @@ class TesWizard extends Component
     public function mount(): void
     {
         if (! session()->has('shuffled_soal_minat')) {
-            $ids = Soal::where('is_active', true)->inRandomOrder()->pluck('id')->toArray();
+            $ids = $this->isReviewMode
+                ? DraftJawaban::where('user_id', Auth::id())->pluck('soal_id')->toArray()
+                : Soal::where('is_active', true)->inRandomOrder()->pluck('id')->toArray();
             session()->put('shuffled_soal_minat', $ids);
         }
 
@@ -37,6 +43,11 @@ class TesWizard extends Component
 
         if ($this->totalSoal > 0) {
             $this->totalBatches = (int) ceil($this->totalSoal / $this->batchSize);
+        }
+
+        if ($this->isReviewMode) {
+            $this->hasStarted = true;
+            $this->loadBatch();
         }
     }
 
