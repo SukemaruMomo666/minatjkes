@@ -336,30 +336,59 @@ class Index extends Component
     public function exportCsv(): StreamedResponse
     {
         $rows = $this->hasilAsesmen;
+        $kelas = $this->namaKelas;
 
-        return response()->streamDownload(function () use ($rows) {
-            $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['No', 'Nama', 'NIM', 'Kelas', 'Minat Utama', 'Skor (%)', 'Status Minat Bakat', 'Status MBTI', 'Hasil MBTI', 'Sertifikat Akademik', 'Sertifikat Non-Akademik']);
+        return response()->streamDownload(function () use ($rows, $kelas) {
+            $headers = ['No', 'Nama', 'NIM', 'Kelas', 'Minat Utama', 'Skor (%)', 'Status Minat Bakat', 'Status MBTI', 'Hasil MBTI', 'Sertifikat Akademik', 'Sertifikat Non-Akademik'];
+
+            echo "<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\">\n";
+            echo "<head><meta charset=\"UTF-8\"><style>\n";
+            echo "body { font-family: Arial, sans-serif; font-size: 11pt; }\n";
+            echo "table { border-collapse: collapse; width: 100%; }\n";
+            echo "th { background-color: #1A2340; color: #ffffff; font-weight: bold; padding: 8px 10px; border: 1px solid #cccccc; text-align: center; }\n";
+            echo "td { padding: 6px 10px; border: 1px solid #dddddd; vertical-align: middle; }\n";
+            echo "tr:nth-child(even) td { background-color: #f5f5f5; }\n";
+            echo ".badge-selesai { color: #2E7D55; font-weight: bold; }\n";
+            echo ".badge-proses { color: #C8922A; font-weight: bold; }\n";
+            echo ".badge-belum { color: #999999; }\n";
+            echo ".badge-ada { color: #2E7D55; font-weight: bold; }\n";
+            echo "caption { font-size: 14pt; font-weight: bold; padding: 10px 0; text-align: left; color: #1A2340; }\n";
+            echo "</style></head><body>\n";
+            echo '<table><caption>Rekap Asesmen Mahasiswa — '.htmlspecialchars($kelas).'</caption>';
+            echo '<thead><tr>';
+            foreach ($headers as $h) {
+                echo '<th>'.htmlspecialchars($h).'</th>';
+            }
+            echo '</tr></thead><tbody>';
 
             foreach ($rows as $i => $mhs) {
-                fputcsv($handle, [
-                    $i + 1,
-                    $mhs['nama'],
-                    $mhs['nim'],
-                    $mhs['kelas'],
-                    $mhs['kategori_utama'],
-                    $mhs['skor_utama'],
-                    $mhs['status_minat'],
-                    $mhs['status_mbti'],
-                    $mhs['mbti_result'],
-                    $mhs['file_akademik'] ? 'Ada' : 'Belum',
-                    $mhs['file_non_akademik'] ? 'Ada' : 'Belum',
-                ]);
+                $statusMinat = $mhs['status_minat'];
+                $statusMbti = $mhs['status_mbti'];
+                $classMinat = match ($statusMinat) {
+                    'Selesai' => 'badge-selesai', 'Dalam Proses' => 'badge-proses', default => 'badge-belum'
+                };
+                $classMbti = match ($statusMbti) {
+                    'Selesai' => 'badge-selesai', 'Dalam Proses' => 'badge-proses', default => 'badge-belum'
+                };
+
+                echo '<tr>';
+                echo '<td style="text-align:center;">'.($i + 1).'</td>';
+                echo '<td>'.htmlspecialchars($mhs['nama']).'</td>';
+                echo '<td style="text-align:center;">'.htmlspecialchars($mhs['nim']).'</td>';
+                echo '<td style="text-align:center;">'.htmlspecialchars($mhs['kelas']).'</td>';
+                echo '<td>'.htmlspecialchars($mhs['kategori_utama'] ?: '-').'</td>';
+                echo '<td style="text-align:center;">'.($mhs['skor_utama'] ? $mhs['skor_utama'].'%' : '-').'</td>';
+                echo '<td style="text-align:center;" class="'.$classMinat.'">'.htmlspecialchars($statusMinat).'</td>';
+                echo '<td style="text-align:center;" class="'.$classMbti.'">'.htmlspecialchars($statusMbti).'</td>';
+                echo '<td style="text-align:center; font-weight:bold;">'.htmlspecialchars($mhs['mbti_result'] ?: '-').'</td>';
+                echo '<td style="text-align:center;" class="'.($mhs['file_akademik'] ? 'badge-ada' : 'badge-belum').'">'.($mhs['file_akademik'] ? 'Ada' : 'Belum').'</td>';
+                echo '<td style="text-align:center;" class="'.($mhs['file_non_akademik'] ? 'badge-ada' : 'badge-belum').'">'.($mhs['file_non_akademik'] ? 'Ada' : 'Belum').'</td>';
+                echo '</tr>';
             }
 
-            fclose($handle);
-        }, 'rekap-mahasiswa-'.$this->namaKelas.'.csv', [
-            'Content-Type' => 'text/csv',
+            echo '</tbody></table></body></html>';
+        }, 'rekap-mahasiswa-'.$this->namaKelas.'.xls', [
+            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
         ]);
     }
 

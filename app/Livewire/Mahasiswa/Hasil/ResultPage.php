@@ -142,9 +142,9 @@ class ResultPage extends Component
         }
 
         // ─── Detail & rekomendasi ─────────────────────────────────────────────
-        $kategoriUtama = array_key_first($this->topKategori);
-        $this->mbtiDetailData = $this->getKamusMbti($this->mbtiResult);
-        $this->rekomendasiKegiatanData = $this->getKamusKegiatan($kategoriUtama);
+        $kategoriUtama = array_key_first($this->topKategori) ?? '';
+        $this->mbtiDetailData = $this->getKamusMbti($this->mbtiResult) ?? [];
+        $this->rekomendasiKegiatanData = $kategoriUtama ? $this->getKamusKegiatan($kategoriUtama) : [];
         $this->kesimpulanGabungan = $this->generateKesimpulan($kategoriUtama, $this->mbtiResult, $this->topKategori, $this->bottomKategori);
     }
 

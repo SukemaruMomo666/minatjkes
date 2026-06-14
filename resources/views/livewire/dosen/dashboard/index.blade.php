@@ -347,7 +347,7 @@
                                     </a>
                                 </div>
                             @else
-                                <p class="text-[10px]" style="color:#B4452F;">Belum diunggah</p>
+                                <p class="text-[10px]" style="color:#B4452F;">Tidak ada data</p>
                             @endif
                         </div>
                         <div class="p-3 rounded-xl" style="background-color:rgba(200,146,42,0.05);border:1px solid rgba(200,146,42,0.15);">
@@ -369,7 +369,7 @@
                                     </a>
                                 </div>
                             @else
-                                <p class="text-[10px]" style="color:#B4452F;">Belum diunggah</p>
+                                <p class="text-[10px]" style="color:#B4452F;">Tidak ada data</p>
                             @endif
                         </div>
                     </div>

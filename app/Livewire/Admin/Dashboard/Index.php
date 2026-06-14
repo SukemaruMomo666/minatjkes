@@ -2,68 +2,105 @@
 
 namespace App\Livewire\Admin\Dashboard;
 
+use App\Enums\UserRole;
 use App\Models\DraftJawaban;
+use App\Models\JawabanMbti;
 use App\Models\Soal;
+use App\Models\SoalMbti;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class Index extends Component
 {
-    // Properti Data Riil
-    public $totalUsers = 0;
+    public int $totalMahasiswa = 0;
 
-    public $activeAssessments = 0;
+    public int $sudahSelesai = 0;
 
-    public $completionRate = 0;
+    public int $sedangProses = 0;
 
-    public $systemHealth = '99.9%'; // Default statis untuk saat ini
+    public int $belumMulai = 0;
 
-    // Properti Data Log & Chart (Akan dibuat dinamis nanti jika tabel log sudah ada)
-    public $participationData = [];
+    public float $completionRate = 0;
 
-    public $activityLogs = [];
+    public array $participationData = [];
 
-    public function mount()
+    public array $activityLogs = [];
+
+    public function mount(): void
     {
         $this->kalkulasiDataUtama();
         $this->siapkanDataChart();
         $this->siapkanActivityLog();
     }
 
-    private function kalkulasiDataUtama()
+    private function kalkulasiDataUtama(): void
     {
-        $this->totalUsers = User::count();
+        $totalSoalMinat = Soal::where('is_active', true)->count();
+        $totalSoalMbti = SoalMbti::where('is_active', true)->count();
 
-        $totalSoal = Soal::count();
+        $mahasiswas = User::where('role', UserRole::Mahasiswa)
+            ->whereHas('kelas', fn ($q) => $q->where('nama_kelas', '!=', 'Developer Test'))
+            ->pluck('id');
+        $this->totalMahasiswa = $mahasiswas->count();
 
-        $userMengerjakan = DraftJawaban::select('user_id')->distinct()->pluck('user_id');
-        $this->activeAssessments = $userMengerjakan->count();
-
-        if ($this->activeAssessments > 0 && $totalSoal > 0) {
-            $userSelesai = 0;
-
-            foreach ($userMengerjakan as $userId) {
-                $jumlahJawabanUser = DraftJawaban::where('user_id', $userId)->count();
-                if ($jumlahJawabanUser >= $totalSoal) {
-                    $userSelesai++;
-                }
-            }
-
-            $this->completionRate = round(($userSelesai / $this->activeAssessments) * 100, 1);
+        if ($this->totalMahasiswa === 0) {
+            return;
         }
+
+        $jawabanCountPerUser = DraftJawaban::whereIn('user_id', $mahasiswas)
+            ->selectRaw('user_id, COUNT(*) as total')
+            ->groupBy('user_id')
+            ->pluck('total', 'user_id');
+
+        $mbtiCountPerUser = JawabanMbti::whereIn('user_id', $mahasiswas)
+            ->selectRaw('user_id, COUNT(*) as total')
+            ->groupBy('user_id')
+            ->pluck('total', 'user_id');
+
+        foreach ($mahasiswas as $id) {
+            $jawabanMinat = $jawabanCountPerUser[$id] ?? 0;
+            $jawabanMbti = $mbtiCountPerUser[$id] ?? 0;
+
+            $minatSelesai = $totalSoalMinat > 0 && $jawabanMinat >= $totalSoalMinat;
+            $mbtiSelesai = $totalSoalMbti > 0 && $jawabanMbti >= $totalSoalMbti;
+
+            if ($minatSelesai && $mbtiSelesai) {
+                $this->sudahSelesai++;
+            } elseif ($jawabanMinat > 0 || $jawabanMbti > 0) {
+                $this->sedangProses++;
+            } else {
+                $this->belumMulai++;
+            }
+        }
+
+        $this->completionRate = round(($this->sudahSelesai / $this->totalMahasiswa) * 100, 1);
     }
 
-    private function siapkanDataChart()
+    private function siapkanDataChart(): void
     {
+        $labels = [];
+        $data = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::today()->subDays($i);
+            $labels[] = $date->translatedFormat('D, d M');
+
+            $count = DraftJawaban::whereDate('updated_at', $date)
+                ->distinct('user_id')
+                ->count('user_id');
+
+            $data[] = $count;
+        }
+
         $this->participationData = [
-            'labels' => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            'data' => [45, 60, 120, 80, 150, 75, 110],
+            'labels' => $labels,
+            'data' => $data,
         ];
     }
 
     private function siapkanActivityLog(): void
     {
-        // Ambil registrasi user terbaru sebagai activity log
         $recentUsers = User::latest()
             ->take(5)
             ->get(['nama', 'role', 'nim_nidn', 'created_at']);

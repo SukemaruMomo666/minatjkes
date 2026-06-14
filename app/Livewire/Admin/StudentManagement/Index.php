@@ -143,7 +143,7 @@ class Index extends Component
             ->orderBy('kelas.nama_kelas')
             ->orderBy('users.nama')
             ->select('users.*')
-            ->paginate(10);
+            ->paginate(20);
 
         return view('livewire.admin.student-management.index', [
             'students' => $students,

@@ -20,49 +20,39 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
                     <div class="sim-card p-5">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background-color:rgba(45,63,107,0.1);">
-                                <i class="ti ti-users text-xl" style="color:#2D3F6B;"></i>
-                            </div>
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background-color:rgba(45,63,107,0.1);">
+                            <i class="ti ti-users text-xl" style="color:#2D3F6B;"></i>
                         </div>
-                        <h3 class="text-3xl font-bold" style="color:#1A2340;">{{ number_format($totalUsers) }}</h3>
-                        <p class="text-xs font-semibold mt-1" style="color:#6B7494;">Total Pengguna</p>
+                        <h3 class="text-3xl font-bold" style="color:#1A2340;">{{ number_format($totalMahasiswa) }}</h3>
+                        <p class="text-xs font-semibold mt-1" style="color:#6B7494;">Total Mahasiswa</p>
                     </div>
 
                     <div class="sim-card p-5">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background-color:rgba(200,146,42,0.1);">
-                                <i class="ti ti-clipboard-check text-xl" style="color:#C8922A;"></i>
-                            </div>
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background-color:rgba(46,125,85,0.1);">
+                            <i class="ti ti-circle-check text-xl" style="color:#2E7D55;"></i>
                         </div>
-                        <h3 class="text-3xl font-bold" style="color:#1A2340;">{{ number_format($activeAssessments) }}</h3>
-                        <p class="text-xs font-semibold mt-1" style="color:#6B7494;">Mengerjakan Tes</p>
-                    </div>
-
-                    <div class="sim-card p-5">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background-color:rgba(46,125,85,0.1);">
-                                <i class="ti ti-circle-check text-xl" style="color:#2E7D55;"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-3xl font-bold" style="color:#1A2340;">{{ $completionRate }}%</h3>
-                        <p class="text-xs font-semibold mt-1" style="color:#6B7494;">Tingkat Penyelesaian</p>
+                        <h3 class="text-3xl font-bold" style="color:#2E7D55;">{{ number_format($sudahSelesai) }}</h3>
+                        <p class="text-xs font-semibold mt-1" style="color:#6B7494;">Selesai Kedua Tes</p>
                         <div class="mt-2 sim-progress-bar">
                             <div class="sim-progress-fill" style="width:{{ $completionRate }}%;background-color:#2E7D55;"></div>
                         </div>
+                        <p class="text-[10px] mt-1 font-semibold" style="color:#2E7D55;">{{ $completionRate }}% dari total mahasiswa</p>
                     </div>
 
                     <div class="sim-card p-5">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background-color:rgba(200,146,42,0.1);">
-                                <i class="ti ti-activity text-xl" style="color:#C8922A;"></i>
-                            </div>
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background-color:rgba(200,146,42,0.1);">
+                            <i class="ti ti-loader text-xl" style="color:#C8922A;"></i>
                         </div>
-                        <h3 class="text-3xl font-bold" style="color:#2E7D55;">{{ $systemHealth }}</h3>
-                        <p class="text-xs font-semibold mt-1" style="color:#6B7494;">System Health</p>
-                        <p class="text-[10px] mt-0.5 flex items-center gap-1" style="color:#2E7D55;">
-                            <i class="ti ti-check text-xs"></i> Semua sistem berjalan normal
-                        </p>
+                        <h3 class="text-3xl font-bold" style="color:#C8922A;">{{ number_format($sedangProses) }}</h3>
+                        <p class="text-xs font-semibold mt-1" style="color:#6B7494;">Sedang Mengerjakan</p>
+                    </div>
+
+                    <div class="sim-card p-5">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style="background-color:rgba(180,69,47,0.1);">
+                            <i class="ti ti-clock text-xl" style="color:#B4452F;"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold" style="color:#B4452F;">{{ number_format($belumMulai) }}</h3>
+                        <p class="text-xs font-semibold mt-1" style="color:#6B7494;">Belum Mulai</p>
                     </div>
                 </div>
 
@@ -70,7 +60,10 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                     <div class="sim-card p-6 lg:col-span-2">
                         <div class="flex items-center justify-between mb-5">
-                            <h3 class="text-base font-bold" style="color:#1A2340;">Tren Partisipasi</h3>
+                            <div>
+                                <h3 class="text-base font-bold" style="color:#1A2340;">Aktivitas Pengerjaan Tes</h3>
+                                <p class="text-xs mt-0.5" style="color:#6B7494;">Jumlah mahasiswa yang menjawab soal per hari</p>
+                            </div>
                             <span class="text-xs px-2.5 py-1 rounded-full font-semibold"
                                   style="background-color:rgba(200,146,42,0.1);color:#A6781F;">7 Hari Terakhir</span>
                         </div>
