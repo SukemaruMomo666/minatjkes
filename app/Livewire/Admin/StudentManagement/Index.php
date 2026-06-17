@@ -6,11 +6,11 @@ use App\Enums\UserRole;
 use App\Models\Kelas;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Index extends Component
 {
@@ -245,23 +245,75 @@ class Index extends Component
         }
     }
 
-    public function downloadTemplate(): StreamedResponse
+    public function downloadTemplate(): Response
     {
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="template_import_mahasiswa.csv"',
-        ];
+        $kelasList = Kelas::where('is_active', true)->orderBy('nama_kelas')->get();
+        $kelasContoh = $kelasList->first()?->nama_kelas ?? 'Tingkat 1A';
+        $kelasContoh2 = $kelasList->skip(1)->first()?->nama_kelas ?? 'Tingkat 1B';
 
-        return response()->stream(function () {
-            $handle = fopen('php://output', 'w');
+        $kelasInfo = $kelasList->map(fn ($k) => $k->nama_kelas)->join(', ');
 
-            fputcsv($handle, ['nama', 'nim', 'kelas', 'jenis_kelamin', 'email']);
-            fputcsv($handle, ['Budi Santoso', '2023001', 'Tingkat 1A', 'L', 'budi@email.com']);
-            fputcsv($handle, ['Siti Aminah', '2023002', 'Tingkat 1A', 'P', '']);
-            fputcsv($handle, ['Ahmad Fauzi', '2023003', 'Tingkat 1B', 'L', '']);
+        $html = <<<HTML
+        <html xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head><meta charset="UTF-8">
+        <style>
+            body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; }
+            .header { background-color: #1A2340; color: #FDF6E8; font-weight: bold; text-align: center; }
+            .kolom { background-color: #C8922A; color: #1A2340; font-weight: bold; }
+            .contoh { background-color: #FDF6E8; }
+            .info { background-color: #EDF2FF; color: #2D3F6B; font-style: italic; }
+            .wajib { color: #B4452F; font-weight: bold; }
+            td { border: 1px solid #ccc; padding: 6px 10px; }
+        </style>
+        </head><body>
+        <table>
+            <tr>
+                <td colspan="5" class="header">TEMPLATE IMPORT DATA MAHASISWA — SIMINAT</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="info">Isi data mulai dari baris ke-4. Jangan ubah nama kolom. Kolom nama dan nim wajib diisi. Password login mahasiswa = NIM.</td>
+            </tr>
+            <tr>
+                <td colspan="5" class="info">Nama kelas harus sama persis dengan yang ada di sistem. Kelas tersedia: {$kelasInfo}</td>
+            </tr>
+            <tr>
+                <td class="kolom">nama <span class="wajib">*</span></td>
+                <td class="kolom">nim <span class="wajib">*</span></td>
+                <td class="kolom">kelas</td>
+                <td class="kolom">jenis_kelamin</td>
+                <td class="kolom">email</td>
+            </tr>
+            <tr class="contoh">
+                <td>Budi Santoso</td>
+                <td>2023001</td>
+                <td>{$kelasContoh}</td>
+                <td>L</td>
+                <td>budi@email.com</td>
+            </tr>
+            <tr class="contoh">
+                <td>Siti Aminah</td>
+                <td>2023002</td>
+                <td>{$kelasContoh}</td>
+                <td>P</td>
+                <td></td>
+            </tr>
+            <tr class="contoh">
+                <td>Ahmad Fauzi</td>
+                <td>2023003</td>
+                <td>{$kelasContoh2}</td>
+                <td>L</td>
+                <td></td>
+            </tr>
+        </table>
+        </body></html>
+        HTML;
 
-            fclose($handle);
-        }, 200, $headers);
+        return response($html, 200, [
+            'Content-Type' => 'application/vnd.ms-excel',
+            'Content-Disposition' => 'attachment; filename="template_import_mahasiswa.xls"',
+        ]);
     }
 
     public function render(): View

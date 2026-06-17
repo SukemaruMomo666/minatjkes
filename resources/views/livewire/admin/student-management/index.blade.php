@@ -187,6 +187,7 @@
                         </table>
                     </div>
                     <p class="mt-2" style="color:#6B7494;">NIM yang sudah ada akan <strong>diperbarui</strong>, NIM baru akan <strong>ditambahkan</strong>. Password default = NIM.</p>
+                    <p class="mt-1" style="color:#C8922A;"><i class="ti ti-bulb text-xs mr-1"></i>Unduh template XLS → isi data → simpan ulang sebagai <strong>CSV</strong> → upload di sini.</p>
                 </div>
 
                 {{-- Hasil Import --}}
