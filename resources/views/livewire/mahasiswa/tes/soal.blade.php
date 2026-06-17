@@ -26,6 +26,7 @@
     {{-- Keterangan Skala Likert --}}
     <div class="flex items-center justify-between px-5 py-3 rounded-t-xl border border-b-0" style="background-color:#fff; border-color:rgba(26,35,64,0.1);">
         <span class="text-[10px] md:text-xs font-bold" style="color:#6B7494;">STS = Sangat Tidak Setuju</span>
+        <span class="text-[10px] md:text-xs font-bold" style="color:#6B7494;">N = Netral</span>
         <span class="text-[10px] md:text-xs font-bold" style="color:#6B7494;">SS = Sangat Setuju</span>
     </div>
 
@@ -50,7 +51,7 @@
                         {{-- Pilihan Jawaban 1-4 (LINGKARAN) --}}
                         <div class="shrink-0 w-full md:w-auto mt-2 md:mt-0 flex justify-center md:justify-end">
                             <div class="flex items-center justify-between w-full md:w-auto gap-5 md:gap-6 px-2 md:px-0">
-                                @foreach([1 => 'STS', 2 => 'TS', 3 => 'S', 4 => 'SS'] as $nilai => $label)
+                                @foreach([1 => 'STS', 2 => 'TS', 3 => 'N', 4 => 'S', 5 => 'SS'] as $nilai => $label)
                                     @php $dipilih = $jawaban === $nilai; @endphp
                                     <div class="flex flex-col items-center">
                                         @if($isReviewMode)

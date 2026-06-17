@@ -377,7 +377,12 @@
 
             </div>
 
-            <div class="px-6 pb-5">
+            <div class="px-6 pb-5 flex flex-col gap-2">
+                <a href="{{ route('dosen.mahasiswa.hasil', ['userId' => $selectedMhsId]) }}"
+                   class="w-full py-2.5 rounded-xl text-sm font-bold text-center transition-all flex items-center justify-center gap-2"
+                   style="background-color:#1A2340;color:#FDF6E8;">
+                    <i class="ti ti-report-analytics text-sm"></i> Lihat Hasil Lengkap
+                </a>
                 <button wire:click="closeDetail"
                         class="w-full py-2.5 rounded-xl text-sm font-semibold transition-all"
                         style="background-color:rgba(26,35,64,0.07);color:#6B7494;">

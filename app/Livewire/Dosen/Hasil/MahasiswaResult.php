@@ -1,14 +1,19 @@
 <?php
 
-namespace App\Livewire\Mahasiswa\Hasil;
+namespace App\Livewire\Dosen\Hasil;
 
 use App\Models\DraftJawaban;
 use App\Models\JawabanMbti;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
-class ResultPage extends Component
+class MahasiswaResult extends Component
 {
+    #[Url]
+    public int $userId = 0;
+
     public string $namaLengkap = '';
 
     public string $nimNidn = '';
@@ -21,31 +26,39 @@ class ResultPage extends Component
 
     public array $radarData = [];
 
-    /** @var array<string, int> semua kategori diurutkan dari skor tertinggi */
+    /** @var array<string, int> */
     public array $persentaseKategori = [];
 
-    /** @var array<string, int> 3 kategori teratas (kelebihan) */
+    /** @var array<string, int> */
     public array $topKategori = [];
 
-    /** @var array<string, int> 3 kategori terbawah (kelemahan) */
+    /** @var array<string, int> */
     public array $bottomKategori = [];
 
     public string $mbtiResult = '';
 
     public array $mbtiDetailData = [];
 
-    /** @var array<string, array<string, mixed>> skor per dimensi MBTI dengan persentase */
+    /** @var array<string, array<string, mixed>> */
     public array $mbtiSkorDimensi = [];
 
     public array $rekomendasiKegiatanData = [];
 
     public string $kesimpulanGabungan = '';
 
-    public function mount()
-    {
-        $userId = Auth::id();
-        $user = Auth::user()->load('kelas');
+    public bool $belumAda = false;
 
+    public function mount(int $userId): void
+    {
+        $user = User::with('kelas')->find($userId);
+
+        if (! $user) {
+            $this->redirect(route('dosen.dashboard'));
+
+            return;
+        }
+
+        $this->userId = $userId;
         $this->namaLengkap = $user->nama ?? '';
         $this->nimNidn = $user->nim_nidn ?? '';
         $this->namaKelas = $user->kelas?->nama_kelas ?? '-';
@@ -58,10 +71,11 @@ class ResultPage extends Component
         $jawabansMinat = DraftJawaban::with('soal.kategori')->where('user_id', $userId)->get();
 
         if ($jawabansMinat->isEmpty()) {
-            return redirect()->route('mahasiswa.tes');
+            $this->belumAda = true;
+
+            return;
         }
 
-        // ─── Hitung skor minat & bakat ────────────────────────────────────────
         $skorMentah = [];
         foreach ($jawabansMinat as $jawaban) {
             $soal = $jawaban->soal;
@@ -90,14 +104,11 @@ class ResultPage extends Component
 
         arsort($persentaseKategori);
         $this->persentaseKategori = $persentaseKategori;
-
         $this->radarLabels = array_keys($persentaseKategori);
         $this->radarData = array_values($persentaseKategori);
-
         $this->topKategori = array_slice($persentaseKategori, 0, 3, true);
         $this->bottomKategori = array_slice(array_reverse($persentaseKategori, true), 0, 3, true);
 
-        // ─── Hitung skor MBTI ────────────────────────────────────────────────
         $jawabansMbti = JawabanMbti::with('soalMbti')->where('user_id', $userId)->get();
         $mbtiSkor = ['E' => 0, 'I' => 0, 'S' => 0, 'N' => 0, 'T' => 0, 'F' => 0, 'J' => 0, 'P' => 0];
 
@@ -127,21 +138,18 @@ class ResultPage extends Component
 
         $this->mbtiResult = $jawabansMbti->isEmpty() ? '' : $E_or_I.$S_or_N.$T_or_F.$J_or_P;
 
-        // ─── Skor per dimensi (untuk bar chart) ──────────────────────────────
         foreach (['EI' => ['E', 'I'], 'SN' => ['S', 'N'], 'TF' => ['T', 'F'], 'JP' => ['J', 'P']] as $dim => [$a, $b]) {
             $total = $mbtiSkor[$a] + $mbtiSkor[$b];
             $aPersen = $total > 0 ? round(($mbtiSkor[$a] / $total) * 100) : 50;
-            $bPersen = 100 - $aPersen;
             $this->mbtiSkorDimensi[$dim] = [
                 $a => $mbtiSkor[$a],
                 $b => $mbtiSkor[$b],
                 $a.'_persen' => $aPersen,
-                $b.'_persen' => $bPersen,
+                $b.'_persen' => 100 - $aPersen,
                 'dominan' => ($mbtiSkor[$a] >= $mbtiSkor[$b]) ? $a : $b,
             ];
         }
 
-        // ─── Detail & rekomendasi ─────────────────────────────────────────────
         $kategoriUtama = array_key_first($this->topKategori) ?? '';
         $this->mbtiDetailData = $this->getKamusMbti($this->mbtiResult) ?? [];
         $this->rekomendasiKegiatanData = $kategoriUtama ? $this->getKamusKegiatan($kategoriUtama) : [];
@@ -156,9 +164,9 @@ class ResultPage extends Component
         $lemahList = implode(', ', array_keys($lemah));
         $mbtiLabel = $mbti ? "{$mbti} ({$julukan})" : 'belum diketahui';
 
-        return "Berdasarkan hasil pemetaan lengkap, bidang minat terkuat Anda adalah {$kuatList} — menunjukkan potensi unggulan yang dapat dikembangkan secara konsisten. "
-            ."Dipadukan dengan tipe kepribadian {$mbtiLabel}, Anda memiliki kecocokan tinggi untuk jalur karier yang memanfaatkan kekuatan tersebut. "
-            ."Sementara itu, bidang {$lemahList} menunjukkan skor lebih rendah. Area ini bukan kelemahan permanen, melainkan peluang pengembangan diri yang dapat ditingkatkan melalui latihan, kegiatan ekstrakurikuler, atau bimbingan akademik yang terarah.";
+        return "Berdasarkan hasil pemetaan lengkap, bidang minat terkuat mahasiswa ini adalah {$kuatList} — menunjukkan potensi unggulan yang dapat dikembangkan secara konsisten. "
+            ."Dipadukan dengan tipe kepribadian {$mbtiLabel}, terdapat kecocokan tinggi untuk jalur karier yang memanfaatkan kekuatan tersebut. "
+            ."Sementara itu, bidang {$lemahList} menunjukkan skor lebih rendah dan merupakan area pengembangan diri yang dapat ditingkatkan melalui bimbingan akademik yang terarah.";
     }
 
     private function getKamusMbti(string $mbti): ?array
@@ -188,69 +196,32 @@ class ResultPage extends Component
     private function getKamusKegiatan(string $kategori): array
     {
         $kategoriLower = strtolower($kategori);
-        $rekomendasi = [];
 
         if (str_contains($kategoriLower, 'klinis')) {
-            $rekomendasi = [
-                'Kompetisi Keperawatan Klinis: Olimpiade OSCE (Objective Structured Clinical Examination).',
-                'Asisten Laboratorium Keperawatan: Bertanggung jawab atas alat atau menjadi tutor sebaya (peer-tutor).',
-                'Lomba Evakuasi & Gawat Darurat (seperti yang diadakan oleh ILMKI).',
-            ];
+            return ['Kompetisi Keperawatan Klinis: Olimpiade OSCE.', 'Asisten Laboratorium Keperawatan / tutor sebaya.', 'Lomba Evakuasi & Gawat Darurat (ILMKI).'];
         } elseif (str_contains($kategoriLower, 'riset') || str_contains($kategoriLower, 'penalaran')) {
-            $rekomendasi = [
-                'Program Kreativitas Mahasiswa (PKM-RE atau PKM-RSH) dari Kemendikbud.',
-                'Lomba Karya Tulis Ilmiah Nasional (LKTIN).',
-                'National Nursing Scientific Essay.',
-            ];
+            return ['Program Kreativitas Mahasiswa (PKM-RE/RSH).', 'Lomba Karya Tulis Ilmiah Nasional (LKTIN).', 'National Nursing Scientific Essay.'];
         } elseif (str_contains($kategoriLower, 'pendidikan') || str_contains($kategoriLower, 'promosi')) {
-            $rekomendasi = [
-                'Lomba Poster Publik / Infografis Kesehatan.',
-                'Membuat Video Edukasi Kesehatan / Content Creator Media Sosial.',
-                'Duta Kesehatan Kampus atau Tim Masyarakat (Pengmas).',
-            ];
+            return ['Lomba Poster / Infografis Kesehatan.', 'Video Edukasi Kesehatan / Content Creator.', 'Duta Kesehatan Kampus atau Tim Pengmas.'];
         } elseif (str_contains($kategoriLower, 'organisasi') || str_contains($kategoriLower, 'kepemimpinan')) {
-            $rekomendasi = [
-                'Pengurus Organisasi Kampus (HIMA, BEM, MPM/DPM, UKM).',
-                'Ikut Kepanitiaan (Ketua panitia, koordinator program).',
-                'Pelatihan Manajerial & Leadership (Public speaking, latsar kepemimpinan, manajemen konflik).',
-            ];
+            return ['Pengurus Organisasi Kampus (HIMA, BEM, UKM).', 'Kepanitiaan (Ketua / koordinator program).', 'Pelatihan Leadership & Public Speaking.'];
         } elseif (str_contains($kategoriLower, 'seni') || str_contains($kategoriLower, 'kreativitas')) {
-            $rekomendasi = [
-                'UKM Seni Budaya (Tari, musik, paduan suara, teater).',
-                'Anggota Tim Desainer (Desain grafis, fotografer, videografer, pengelola podcast).',
-                'Kompetisi Seni Kreativitas.',
-            ];
+            return ['UKM Seni Budaya (Tari, musik, teater).', 'Tim Desainer / fotografer / videografer.', 'Kompetisi Seni Kreativitas.'];
         } elseif (str_contains($kategoriLower, 'olahraga') || str_contains($kategoriLower, 'bela diri')) {
-            $rekomendasi = [
-                'Unit Kegiatan Mahasiswa (UKM) Olahraga (Futsal, Voli, Badminton).',
-                'Unit Kegiatan Mahasiswa (UKM) Bela Diri (Pencak silat, Taekwondo, Karate).',
-                'Pekan Olahraga Mahasiswa Nasional (POMNAS) atau kompetisi setara.',
-            ];
+            return ['UKM Olahraga (Futsal, Voli, Badminton).', 'UKM Bela Diri (Pencak silat, Taekwondo).', 'Pekan Olahraga Mahasiswa Nasional (POMNAS).'];
         } elseif (str_contains($kategoriLower, 'wirausaha') || str_contains($kategoriLower, 'entrepreneur')) {
-            $rekomendasi = [
-                'Program Kreativitas Mahasiswa bidang Kewirausahaan (PKM-K) atau P2MW.',
-                'Kompetisi Bisnis Mahasiswa Indonesia (KBMI).',
-                'Inkubator bisnis kampus atau pengelolaan koperasi mahasiswa.',
-            ];
+            return ['PKM-K atau P2MW Kewirausahaan.', 'Kompetisi Bisnis Mahasiswa Indonesia (KBMI).', 'Inkubator bisnis / koperasi mahasiswa.'];
         } elseif (str_contains($kategoriLower, 'kemanusiaan') || str_contains($kategoriLower, 'relawan')) {
-            $rekomendasi = [
-                'Korps Sukarela (KSR) PMI tingkat universitas.',
-                'Tim Disaster Medical Committee (DMC) atau Satgas Tanggap Bencana.',
-                'Fasilitator dalam program pengabdian masyarakat.',
-            ];
+            return ['Korps Sukarela (KSR) PMI universitas.', 'Tim Disaster Medical Committee (DMC).', 'Fasilitator pengabdian masyarakat.'];
         } elseif (str_contains($kategoriLower, 'literasi') || str_contains($kategoriLower, 'bahasa')) {
-            $rekomendasi = [
-                'Delegasi Lomba Bahasa (Debat, pidato bahasa asing, storytelling).',
-                'Tim Hubungan Masyarakat (Humas) & Publikasi (Website kampus, e-mading).',
-                'Program Kelas Internasional / Pertukaran Pelajar (Student Exchange).',
-            ];
+            return ['Lomba Debat / pidato bahasa asing.', 'Tim Humas & Publikasi kampus.', 'Program Student Exchange / kelas internasional.'];
         }
 
-        return $rekomendasi;
+        return [];
     }
 
-    public function render()
+    public function render(): View
     {
-        return view('livewire.mahasiswa.hasil.result-page')->layout('layouts.blank');
+        return view('livewire.dosen.hasil.mahasiswa-result')->layout('layouts.blank');
     }
 }

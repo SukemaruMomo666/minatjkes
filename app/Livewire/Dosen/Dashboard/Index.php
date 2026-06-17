@@ -157,7 +157,7 @@ class Index extends Component
                     }
                     $nilai = (int) $jawaban->jawaban;
                     if ($jawaban->soal->is_unfav) {
-                        $nilai = 5 - $nilai;
+                        $nilai = 6 - $nilai;
                     }
                     $skorMentah[$namaKat]['total'] += $nilai;
                     $skorMentah[$namaKat]['jumlah']++;
@@ -168,7 +168,7 @@ class Index extends Component
             $skorTertinggi = 0;
 
             foreach ($skorMentah as $nama => $data) {
-                $maxSkor = $data['jumlah'] * 4;
+                $maxSkor = $data['jumlah'] * 5;
                 $pct = $maxSkor > 0 ? round(($data['total'] / $maxSkor) * 100) : 0;
 
                 if (! isset($rekapKompetensi[$nama])) {
