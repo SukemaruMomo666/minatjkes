@@ -9,9 +9,17 @@
                 <h1 class="text-base font-bold" style="color:#1A2340;">Manajemen Mahasiswa</h1>
                 <p class="text-xs" style="color:#6B7494;">Kelola data mahasiswa terdaftar</p>
             </div>
-            <button wire:click="openModal()" class="sim-btn-gold text-sm">
-                <i class="ti ti-user-plus"></i> Tambah Mahasiswa
-            </button>
+            <div class="flex items-center gap-2">
+                <button wire:click="downloadTemplate" class="sim-btn-ghost text-sm">
+                    <i class="ti ti-download"></i> Template CSV
+                </button>
+                <button wire:click="openImportModal()" class="sim-btn-ghost text-sm">
+                    <i class="ti ti-file-upload"></i> Import CSV
+                </button>
+                <button wire:click="openModal()" class="sim-btn-gold text-sm">
+                    <i class="ti ti-user-plus"></i> Tambah Mahasiswa
+                </button>
+            </div>
         </header>
 
         <div class="flex-1 overflow-y-auto p-8">
@@ -141,6 +149,92 @@
             </div>
         </div>
     </main>
+
+    {{-- Modal Import CSV --}}
+    @if($isImportModalOpen)
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4"
+             style="background-color:rgba(26,35,64,0.5);">
+            <div class="sim-card w-full max-w-lg p-6">
+
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="text-base font-bold" style="color:#1A2340;">
+                        <i class="ti ti-file-upload mr-2 text-[#C8922A]"></i>Import Data Mahasiswa
+                    </h3>
+                    <button wire:click="closeImportModal()" style="color:#6B7494;">
+                        <i class="ti ti-x text-lg"></i>
+                    </button>
+                </div>
+
+                {{-- Panduan --}}
+                <div class="rounded-xl p-4 mb-4 text-xs space-y-1.5" style="background-color:rgba(45,63,107,0.05);border:1px solid rgba(45,63,107,0.12);">
+                    <p class="font-bold mb-2" style="color:#2D3F6B;"><i class="ti ti-info-circle mr-1"></i>Format CSV yang diperlukan:</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-[11px]">
+                            <thead>
+                                <tr style="color:#6B7494;">
+                                    <th class="pr-4 py-1 font-bold">Kolom</th>
+                                    <th class="pr-4 py-1 font-bold">Isi</th>
+                                    <th class="py-1 font-bold">Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody style="color:#1A2340;">
+                                <tr><td class="pr-4 py-0.5 font-mono font-bold">nama</td><td class="pr-4">Nama Lengkap</td><td class="text-[10px]" style="color:#6B7494;">Wajib</td></tr>
+                                <tr><td class="pr-4 py-0.5 font-mono font-bold">nim</td><td class="pr-4">NIM mahasiswa</td><td class="text-[10px]" style="color:#6B7494;">Wajib · jadi password</td></tr>
+                                <tr><td class="pr-4 py-0.5 font-mono font-bold">kelas</td><td class="pr-4">Nama kelas</td><td class="text-[10px]" style="color:#6B7494;">Harus sama persis dengan kelas di sistem</td></tr>
+                                <tr><td class="pr-4 py-0.5 font-mono font-bold">jenis_kelamin</td><td class="pr-4">L atau P</td><td class="text-[10px]" style="color:#6B7494;">Opsional</td></tr>
+                                <tr><td class="pr-4 py-0.5 font-mono font-bold">email</td><td class="pr-4">Email</td><td class="text-[10px]" style="color:#6B7494;">Opsional</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mt-2" style="color:#6B7494;">NIM yang sudah ada akan <strong>diperbarui</strong>, NIM baru akan <strong>ditambahkan</strong>. Password default = NIM.</p>
+                </div>
+
+                {{-- Hasil Import --}}
+                @if($importSummary)
+                    <div class="rounded-xl p-3 mb-4 text-xs font-semibold flex items-center gap-2"
+                         style="background-color:rgba(46,125,85,0.1);color:#2E7D55;border:1px solid rgba(46,125,85,0.2);">
+                        <i class="ti ti-circle-check text-sm"></i> {{ $importSummary }}
+                    </div>
+                @endif
+
+                @if(!empty($importErrors))
+                    <div class="rounded-xl p-3 mb-4 text-xs" style="background-color:rgba(180,69,47,0.06);border:1px solid rgba(180,69,47,0.2);">
+                        <p class="font-bold mb-2" style="color:#B4452F;"><i class="ti ti-alert-circle mr-1"></i>{{ count($importErrors) }} baris bermasalah:</p>
+                        <ul class="space-y-1" style="color:#B4452F;">
+                            @foreach($importErrors as $err)
+                                <li>{{ $err }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                {{-- Upload --}}
+                <div class="mb-5">
+                    <label class="block text-xs font-semibold mb-2" style="color:#1A2340;">Pilih File CSV</label>
+                    <input wire:model="importFile" type="file" accept=".csv"
+                           class="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:cursor-pointer"
+                           style="color:#6B7494;file:background-color:rgba(200,146,42,0.12);file:color:#C8922A;">
+                    @error('importFile') <p class="text-xs mt-1" style="color:#B4452F;">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="flex gap-3">
+                    <button wire:click="closeImportModal()" class="flex-1 sim-btn-ghost text-sm justify-center">
+                        Tutup
+                    </button>
+                    <button wire:click="importMahasiswa()"
+                            wire:loading.attr="disabled"
+                            class="flex-1 sim-btn-gold text-sm justify-center">
+                        <span wire:loading.remove wire:target="importMahasiswa">
+                            <i class="ti ti-upload mr-1"></i> Proses Import
+                        </span>
+                        <span wire:loading wire:target="importMahasiswa">
+                            <i class="ti ti-loader animate-spin mr-1"></i> Memproses...
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 
     {{-- Modal Tambah / Edit Mahasiswa --}}
     @if($isModalOpen)

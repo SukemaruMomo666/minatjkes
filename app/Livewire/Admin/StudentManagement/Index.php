@@ -8,11 +8,13 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Index extends Component
 {
-    use WithPagination;
+    use WithFileUploads, WithPagination;
 
     protected $paginationTheme = 'tailwind';
 
@@ -35,6 +37,14 @@ class Index extends Component
     public ?int $filterKelas = null;
 
     public string $search = '';
+
+    public bool $isImportModalOpen = false;
+
+    public $importFile = null;
+
+    public array $importErrors = [];
+
+    public ?string $importSummary = null;
 
     public function updatingSearch(): void
     {
@@ -127,6 +137,131 @@ class Index extends Component
     {
         User::findOrFail($id)->delete();
         session()->flash('message', 'Mahasiswa berhasil dihapus.');
+    }
+
+    public function openImportModal(): void
+    {
+        $this->importFile = null;
+        $this->importErrors = [];
+        $this->importSummary = null;
+        $this->isImportModalOpen = true;
+    }
+
+    public function closeImportModal(): void
+    {
+        $this->isImportModalOpen = false;
+        $this->importFile = null;
+        $this->importErrors = [];
+        $this->importSummary = null;
+    }
+
+    public function importMahasiswa(): void
+    {
+        $this->validate([
+            'importFile' => 'required|file|mimes:csv,txt|max:2048',
+        ], [
+            'importFile.required' => 'Pilih file CSV terlebih dahulu.',
+            'importFile.mimes' => 'File harus berformat CSV.',
+            'importFile.max' => 'Ukuran file maksimal 2MB.',
+        ]);
+
+        $path = $this->importFile->getRealPath();
+        $handle = fopen($path, 'r');
+        $kelasList = Kelas::all()->keyBy(fn ($k) => strtolower(trim($k->nama_kelas)));
+
+        $rowNum = 0;
+        $berhasil = 0;
+        $diperbarui = 0;
+        $errors = [];
+
+        while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+            $rowNum++;
+
+            if ($rowNum === 1) {
+                continue;
+            }
+
+            $row = array_map('trim', $row);
+
+            $nama = $row[0] ?? '';
+            $nim = $row[1] ?? '';
+            $namaKelas = $row[2] ?? '';
+            $kelaminRaw = strtolower($row[3] ?? '');
+            $email = $row[4] ?? '';
+
+            if (empty($nama) || empty($nim)) {
+                $errors[] = "Baris {$rowNum}: Nama dan NIM wajib diisi.";
+
+                continue;
+            }
+
+            $kelamin = match ($kelaminRaw) {
+                'l', 'laki-laki', 'laki', 'male' => 'laki-laki',
+                'p', 'perempuan', 'female' => 'perempuan',
+                default => null,
+            };
+
+            $kelasId = null;
+            if ($namaKelas) {
+                $kelas = $kelasList->get(strtolower($namaKelas));
+                if (! $kelas) {
+                    $errors[] = "Baris {$rowNum}: Kelas \"{$namaKelas}\" tidak ditemukan.";
+
+                    continue;
+                }
+                $kelasId = $kelas->id;
+            }
+
+            $existing = User::where('nim_nidn', $nim)->first();
+
+            $data = [
+                'nama' => $nama,
+                'nim_nidn' => $nim,
+                'kelas_id' => $kelasId,
+                'jenis_kelamin' => $kelamin,
+                'email' => $email ?: null,
+                'role' => UserRole::Mahasiswa,
+            ];
+
+            if ($existing) {
+                $existing->update($data);
+                $diperbarui++;
+            } else {
+                $data['password'] = Hash::make($nim);
+                User::create($data);
+                $berhasil++;
+            }
+        }
+
+        fclose($handle);
+
+        $this->importErrors = $errors;
+        $this->importSummary = "{$berhasil} mahasiswa ditambahkan, {$diperbarui} diperbarui.";
+        $this->importFile = null;
+
+        if (empty($errors)) {
+            session()->flash('message', $this->importSummary);
+            $this->closeImportModal();
+        }
+    }
+
+    public function downloadTemplate(): StreamedResponse
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="template_import_mahasiswa.csv"',
+        ];
+
+        return response()->stream(function () {
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, ['nama', 'nim', 'kelas', 'jenis_kelamin', 'email']);
+            fputcsv($handle, ['Budi Santoso', '2023001', 'Tingkat 1A', 'L', 'budi@email.com']);
+            fputcsv($handle, ['Siti Aminah', '2023002', 'Tingkat 1A', 'P', '']);
+            fputcsv($handle, ['Ahmad Fauzi', '2023003', 'Tingkat 1B', 'L', '']);
+
+            fclose($handle);
+        }, 200, $headers);
     }
 
     public function render(): View
