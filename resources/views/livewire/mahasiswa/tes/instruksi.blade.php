@@ -48,27 +48,28 @@
         <h3 class="text-base font-bold mb-3" style="color:#1A2340;"><i class="ti ti-school text-[#C8922A] mr-2"></i>Tahap 1: Minat & Bakat</h3>
         <p class="text-sm mb-5" style="color:#6B7494;">Pada tahap pertama (60 soal), Anda akan diminta merespons pernyataan menggunakan 5 skala penilaian berikut:</p>
 
-        <div class="grid grid-cols-3 md:grid-cols-5 gap-3 md:gap-4 mb-8">
-            <div class="p-4 rounded-xl border text-center transition-all hover:scale-105" style="background-color:rgba(180,69,47,0.05); border-color:rgba(180,69,47,0.2);">
-                <span class="block text-2xl font-bold mb-1" style="color:#B4452F;">1</span>
-                <span class="text-[10px] md:text-xs font-bold" style="color:#B4452F;">Sangat Tidak Setuju<br>(STS)</span>
+        <div class="flex gap-2 md:gap-3 mb-8">
+            @foreach([
+                ['nilai' => 1, 'label' => 'Sangat Tidak Setuju', 'singkat' => 'STS', 'bg' => 'rgba(180,69,47,0.06)', 'border' => 'rgba(180,69,47,0.25)', 'color' => '#B4452F'],
+                ['nilai' => 2, 'label' => 'Tidak Setuju',        'singkat' => 'TS',  'bg' => 'rgba(217,119,87,0.06)', 'border' => 'rgba(217,119,87,0.25)', 'color' => '#D97757'],
+                ['nilai' => 3, 'label' => 'Netral',              'singkat' => 'N',   'bg' => 'rgba(107,116,148,0.06)','border' => 'rgba(107,116,148,0.25)','color' => '#6B7494'],
+                ['nilai' => 4, 'label' => 'Setuju',              'singkat' => 'S',   'bg' => 'rgba(79,168,116,0.06)', 'border' => 'rgba(79,168,116,0.25)', 'color' => '#4FA874'],
+                ['nilai' => 5, 'label' => 'Sangat Setuju',       'singkat' => 'SS',  'bg' => 'rgba(46,125,85,0.06)',  'border' => 'rgba(46,125,85,0.25)',  'color' => '#2E7D55'],
+            ] as $skala)
+            <div class="flex-1 flex flex-col items-center justify-center py-4 px-2 rounded-xl border text-center transition-all hover:scale-105 hover:shadow-md"
+                 style="background-color:{{ $skala['bg'] }};border-color:{{ $skala['border'] }};">
+                <div class="w-9 h-9 rounded-full flex items-center justify-center mb-2 font-bold text-base"
+                     style="background-color:{{ $skala['color'] }};color:#fff;">
+                    {{ $skala['nilai'] }}
+                </div>
+                <span class="text-[9px] md:text-[11px] font-bold leading-tight" style="color:{{ $skala['color'] }};">
+                    {{ $skala['label'] }}
+                </span>
+                <span class="text-[9px] md:text-[10px] font-semibold mt-0.5" style="color:{{ $skala['color'] }};opacity:0.7;">
+                    ({{ $skala['singkat'] }})
+                </span>
             </div>
-            <div class="p-4 rounded-xl border text-center transition-all hover:scale-105" style="background-color:rgba(217,119,87,0.05); border-color:rgba(217,119,87,0.2);">
-                <span class="block text-2xl font-bold mb-1" style="color:#D97757;">2</span>
-                <span class="text-[10px] md:text-xs font-bold" style="color:#D97757;">Tidak Setuju<br>(TS)</span>
-            </div>
-            <div class="p-4 rounded-xl border text-center transition-all hover:scale-105" style="background-color:rgba(107,116,148,0.05); border-color:rgba(107,116,148,0.2);">
-                <span class="block text-2xl font-bold mb-1" style="color:#6B7494;">3</span>
-                <span class="text-[10px] md:text-xs font-bold" style="color:#6B7494;">Netral<br>(N)</span>
-            </div>
-            <div class="p-4 rounded-xl border text-center transition-all hover:scale-105" style="background-color:rgba(79,168,116,0.05); border-color:rgba(79,168,116,0.2);">
-                <span class="block text-2xl font-bold mb-1" style="color:#4FA874;">4</span>
-                <span class="text-[10px] md:text-xs font-bold" style="color:#4FA874;">Setuju<br>(S)</span>
-            </div>
-            <div class="p-4 rounded-xl border text-center transition-all hover:scale-105" style="background-color:rgba(46,125,85,0.05); border-color:rgba(46,125,85,0.2);">
-                <span class="block text-2xl font-bold mb-1" style="color:#2E7D55;">5</span>
-                <span class="text-[10px] md:text-xs font-bold" style="color:#2E7D55;">Sangat Setuju<br>(SS)</span>
-            </div>
+            @endforeach
         </div>
 
         <hr style="border-color:rgba(26,35,64,0.08); margin-bottom: 1.5rem;">
