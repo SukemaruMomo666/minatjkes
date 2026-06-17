@@ -10,9 +10,9 @@
                 <p class="text-xs" style="color:#6B7494;">Kelola data mahasiswa terdaftar</p>
             </div>
             <div class="flex items-center gap-2">
-                <button wire:click="downloadTemplate" class="sim-btn-ghost text-sm">
-                    <i class="ti ti-download"></i> Template CSV
-                </button>
+                <a href="{{ route('admin.students.template') }}" class="sim-btn-ghost text-sm">
+                    <i class="ti ti-download"></i> Template XLS
+                </a>
                 <button wire:click="openImportModal()" class="sim-btn-ghost text-sm">
                     <i class="ti ti-file-upload"></i> Import CSV
                 </button>
