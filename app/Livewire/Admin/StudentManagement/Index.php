@@ -157,14 +157,17 @@ class Index extends Component
     public function importMahasiswa(): void
     {
         $this->validate([
-            'importFile' => 'required|file|mimes:csv,txt|max:2048',
+            'importFile' => 'required|file|mimes:csv,txt,xls,xlsx|max:2048',
         ], [
-            'importFile.required' => 'Pilih file CSV terlebih dahulu.',
-            'importFile.mimes' => 'File harus berformat CSV.',
+            'importFile.required' => 'Pilih file terlebih dahulu.',
             'importFile.max' => 'Ukuran file maksimal 2MB.',
         ]);
 
         $path = $this->importFile->getRealPath();
+
+        $firstLine = file($path, FILE_IGNORE_NEW_LINES)[0] ?? '';
+        $delimiter = substr_count($firstLine, ';') >= substr_count($firstLine, ',') ? ';' : ',';
+
         $handle = fopen($path, 'r');
         $kelasList = Kelas::all()->keyBy(fn ($k) => strtolower(trim($k->nama_kelas)));
 
@@ -173,7 +176,7 @@ class Index extends Component
         $diperbarui = 0;
         $errors = [];
 
-        while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+        while (($row = fgetcsv($handle, 1000, $delimiter)) !== false) {
             $rowNum++;
 
             if ($rowNum === 1) {

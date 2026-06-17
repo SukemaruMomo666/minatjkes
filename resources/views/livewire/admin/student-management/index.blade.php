@@ -187,7 +187,7 @@
                         </table>
                     </div>
                     <p class="mt-2" style="color:#6B7494;">NIM yang sudah ada akan <strong>diperbarui</strong>, NIM baru akan <strong>ditambahkan</strong>. Password default = NIM.</p>
-                    <p class="mt-1" style="color:#C8922A;"><i class="ti ti-bulb text-xs mr-1"></i>Unduh template XLS → isi data → simpan ulang sebagai <strong>CSV</strong> → upload di sini.</p>
+                    <p class="mt-1" style="color:#C8922A;"><i class="ti ti-bulb text-xs mr-1"></i>Unduh template XLS → isi data di Excel → simpan → upload langsung file CSV atau XLS hasil simpanan Excel.</p>
                 </div>
 
                 {{-- Hasil Import --}}
@@ -212,7 +212,7 @@
                 {{-- Upload --}}
                 <div class="mb-5">
                     <label class="block text-xs font-semibold mb-2" style="color:#1A2340;">Pilih File CSV</label>
-                    <input wire:model="importFile" type="file" accept=".csv"
+                    <input wire:model="importFile" type="file" accept=".csv,.xls,.xlsx,.txt"
                            class="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:cursor-pointer"
                            style="color:#6B7494;file:background-color:rgba(200,146,42,0.12);file:color:#C8922A;">
                     @error('importFile') <p class="text-xs mt-1" style="color:#B4452F;">{{ $message }}</p> @enderror
