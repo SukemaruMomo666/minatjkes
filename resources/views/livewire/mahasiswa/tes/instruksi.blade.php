@@ -46,9 +46,9 @@
     <div class="sim-card p-6 md:p-8 mb-8">
         
         <h3 class="text-base font-bold mb-3" style="color:#1A2340;"><i class="ti ti-school text-[#C8922A] mr-2"></i>Tahap 1: Minat & Bakat</h3>
-        <p class="text-sm mb-5" style="color:#6B7494;">Pada tahap pertama (60 soal), Anda akan diminta merespons pernyataan menggunakan 4 skala penilaian berikut:</p>
+        <p class="text-sm mb-5" style="color:#6B7494;">Pada tahap pertama (60 soal), Anda akan diminta merespons pernyataan menggunakan 5 skala penilaian berikut:</p>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
+        <div class="grid grid-cols-3 md:grid-cols-5 gap-3 md:gap-4 mb-8">
             <div class="p-4 rounded-xl border text-center transition-all hover:scale-105" style="background-color:rgba(180,69,47,0.05); border-color:rgba(180,69,47,0.2);">
                 <span class="block text-2xl font-bold mb-1" style="color:#B4452F;">1</span>
                 <span class="text-[10px] md:text-xs font-bold" style="color:#B4452F;">Sangat Tidak Setuju<br>(STS)</span>
@@ -57,12 +57,16 @@
                 <span class="block text-2xl font-bold mb-1" style="color:#D97757;">2</span>
                 <span class="text-[10px] md:text-xs font-bold" style="color:#D97757;">Tidak Setuju<br>(TS)</span>
             </div>
+            <div class="p-4 rounded-xl border text-center transition-all hover:scale-105" style="background-color:rgba(107,116,148,0.05); border-color:rgba(107,116,148,0.2);">
+                <span class="block text-2xl font-bold mb-1" style="color:#6B7494;">3</span>
+                <span class="text-[10px] md:text-xs font-bold" style="color:#6B7494;">Netral<br>(N)</span>
+            </div>
             <div class="p-4 rounded-xl border text-center transition-all hover:scale-105" style="background-color:rgba(79,168,116,0.05); border-color:rgba(79,168,116,0.2);">
-                <span class="block text-2xl font-bold mb-1" style="color:#4FA874;">3</span>
+                <span class="block text-2xl font-bold mb-1" style="color:#4FA874;">4</span>
                 <span class="text-[10px] md:text-xs font-bold" style="color:#4FA874;">Setuju<br>(S)</span>
             </div>
             <div class="p-4 rounded-xl border text-center transition-all hover:scale-105" style="background-color:rgba(46,125,85,0.05); border-color:rgba(46,125,85,0.2);">
-                <span class="block text-2xl font-bold mb-1" style="color:#2E7D55;">4</span>
+                <span class="block text-2xl font-bold mb-1" style="color:#2E7D55;">5</span>
                 <span class="text-[10px] md:text-xs font-bold" style="color:#2E7D55;">Sangat Setuju<br>(SS)</span>
             </div>
         </div>
