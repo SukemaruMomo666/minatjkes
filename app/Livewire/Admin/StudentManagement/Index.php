@@ -10,12 +10,11 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
-    use WithFileUploads, WithPagination;
+    use WithPagination;
 
     protected $paginationTheme = 'tailwind';
 
@@ -40,12 +39,6 @@ class Index extends Component
     public string $search = '';
 
     public bool $isImportModalOpen = false;
-
-    public $importFile = null;
-
-    public array $importErrors = [];
-
-    public ?string $importSummary = null;
 
     public function updatingSearch(): void
     {
@@ -157,120 +150,21 @@ class Index extends Component
         session()->flash('message', "Hasil tes seluruh mahasiswa kelas {$kelas->nama_kelas} berhasil direset.");
     }
 
+    public function mount(): void
+    {
+        if (session()->has('import_error') || session()->has('import_errors') || session()->has('import_summary')) {
+            $this->isImportModalOpen = true;
+        }
+    }
+
     public function openImportModal(): void
     {
-        $this->importFile = null;
-        $this->importErrors = [];
-        $this->importSummary = null;
         $this->isImportModalOpen = true;
     }
 
     public function closeImportModal(): void
     {
         $this->isImportModalOpen = false;
-        $this->importFile = null;
-        $this->importErrors = [];
-        $this->importSummary = null;
-    }
-
-    public function importMahasiswa(): void
-    {
-        $this->validate([
-            'importFile' => 'required|file|max:2048',
-        ], [
-            'importFile.required' => 'Pilih file terlebih dahulu.',
-            'importFile.max' => 'Ukuran file maksimal 2MB.',
-        ]);
-
-        $ext = strtolower($this->importFile->getClientOriginalExtension());
-        if (! in_array($ext, ['csv', 'txt', 'xls', 'xlsx'])) {
-            $this->addError('importFile', 'File harus berformat CSV atau XLS.');
-
-            return;
-        }
-
-        $path = $this->importFile->getRealPath();
-
-        $firstLine = file($path, FILE_IGNORE_NEW_LINES)[0] ?? '';
-        $delimiter = substr_count($firstLine, ';') >= substr_count($firstLine, ',') ? ';' : ',';
-
-        $handle = fopen($path, 'r');
-        $kelasList = Kelas::all()->keyBy(fn ($k) => strtolower(trim($k->nama_kelas)));
-
-        $rowNum = 0;
-        $berhasil = 0;
-        $diperbarui = 0;
-        $errors = [];
-
-        while (($row = fgetcsv($handle, 1000, $delimiter)) !== false) {
-            $rowNum++;
-
-            if ($rowNum === 1) {
-                continue;
-            }
-
-            $row = array_map('trim', $row);
-
-            $nama = $row[0] ?? '';
-            $nim = $row[1] ?? '';
-            $namaKelas = $row[2] ?? '';
-            $kelaminRaw = strtolower($row[3] ?? '');
-            $email = $row[4] ?? '';
-
-            if (empty($nama) || empty($nim)) {
-                $errors[] = "Baris {$rowNum}: Nama dan NIM wajib diisi.";
-
-                continue;
-            }
-
-            $kelamin = match ($kelaminRaw) {
-                'l', 'laki-laki', 'laki', 'male' => 'laki-laki',
-                'p', 'perempuan', 'female' => 'perempuan',
-                default => null,
-            };
-
-            $kelasId = null;
-            if ($namaKelas) {
-                $kelas = $kelasList->get(strtolower($namaKelas));
-                if (! $kelas) {
-                    $errors[] = "Baris {$rowNum}: Kelas \"{$namaKelas}\" tidak ditemukan.";
-
-                    continue;
-                }
-                $kelasId = $kelas->id;
-            }
-
-            $existing = User::where('nim_nidn', $nim)->first();
-
-            $data = [
-                'nama' => $nama,
-                'nim_nidn' => $nim,
-                'kelas_id' => $kelasId,
-                'jenis_kelamin' => $kelamin,
-                'email' => $email ?: null,
-                'role' => UserRole::Mahasiswa,
-            ];
-
-            if ($existing) {
-                $existing->update($data);
-                $diperbarui++;
-            } else {
-                $data['password'] = Hash::make($nim);
-                User::create($data);
-                $berhasil++;
-            }
-        }
-
-        fclose($handle);
-
-        $this->importErrors = $errors;
-        $this->importSummary = "{$berhasil} mahasiswa ditambahkan, {$diperbarui} diperbarui.";
-        $this->importFile = null;
-
-        if (empty($errors)) {
-            session()->flash('message', $this->importSummary);
-            $this->closeImportModal();
-        }
     }
 
     public function render(): View
