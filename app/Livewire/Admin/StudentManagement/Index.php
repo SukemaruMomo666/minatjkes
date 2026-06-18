@@ -176,11 +176,18 @@ class Index extends Component
     public function importMahasiswa(): void
     {
         $this->validate([
-            'importFile' => 'required|file|mimes:csv,txt,xls,xlsx|max:2048',
+            'importFile' => 'required|file|max:2048',
         ], [
             'importFile.required' => 'Pilih file terlebih dahulu.',
             'importFile.max' => 'Ukuran file maksimal 2MB.',
         ]);
+
+        $ext = strtolower($this->importFile->getClientOriginalExtension());
+        if (! in_array($ext, ['csv', 'txt', 'xls', 'xlsx'])) {
+            $this->addError('importFile', 'File harus berformat CSV atau XLS.');
+
+            return;
+        }
 
         $path = $this->importFile->getRealPath();
 
