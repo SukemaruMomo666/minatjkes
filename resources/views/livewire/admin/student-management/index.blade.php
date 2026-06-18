@@ -58,7 +58,16 @@
                     <button wire:click="$set('search', ''); $set('filterKelas', null)"
                             class="text-xs px-3 py-2 rounded-xl transition-all"
                             style="background:rgba(180,69,47,0.08);color:#B4452F;border:1px solid rgba(180,69,47,0.2);">
-                        <i class="ti ti-x text-xs mr-1"></i>Reset
+                        <i class="ti ti-x text-xs mr-1"></i>Reset Filter
+                    </button>
+                @endif
+
+                @if($filterKelas)
+                    <button wire:click="resetTesKelas({{ $filterKelas }})"
+                            wire:confirm="Reset semua hasil tes mahasiswa di kelas ini? Mahasiswa harus mengerjakan tes dari awal."
+                            class="text-xs px-3 py-2 rounded-xl transition-all flex items-center gap-1"
+                            style="background:rgba(180,69,47,0.08);color:#B4452F;border:1px solid rgba(180,69,47,0.2);">
+                        <i class="ti ti-refresh-alert text-xs"></i> Reset Tes Kelas Ini
                     </button>
                 @endif
             </div>
@@ -123,6 +132,12 @@
                                                     class="p-1.5 rounded-lg transition-all"
                                                     style="color:#C8922A;" title="Edit">
                                                 <i class="ti ti-pencil text-base"></i>
+                                            </button>
+                                            <button wire:click="resetTesMahasiswa({{ $student->id }})"
+                                                    wire:confirm="Reset hasil tes {{ $student->nama }}? Mahasiswa harus mengerjakan tes dari awal."
+                                                    class="p-1.5 rounded-lg transition-all"
+                                                    style="color:#2D3F6B;" title="Reset Tes">
+                                                <i class="ti ti-refresh text-base"></i>
                                             </button>
                                             <button wire:click="hapus({{ $student->id }})"
                                                     wire:confirm="Hapus mahasiswa {{ $student->nama }}? Semua data jawabannya juga akan terpengaruh."

@@ -3,6 +3,8 @@
 namespace App\Livewire\Admin\StudentManagement;
 
 use App\Enums\UserRole;
+use App\Models\DraftJawaban;
+use App\Models\JawabanMbti;
 use App\Models\Kelas;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
@@ -136,6 +138,23 @@ class Index extends Component
     {
         User::findOrFail($id)->delete();
         session()->flash('message', 'Mahasiswa berhasil dihapus.');
+    }
+
+    public function resetTesMahasiswa(int $id): void
+    {
+        $student = User::findOrFail($id);
+        DraftJawaban::where('user_id', $id)->delete();
+        JawabanMbti::where('user_id', $id)->delete();
+        session()->flash('message', "Hasil tes {$student->nama} berhasil direset.");
+    }
+
+    public function resetTesKelas(int $kelasId): void
+    {
+        $kelas = Kelas::findOrFail($kelasId);
+        $userIds = User::where('kelas_id', $kelasId)->where('role', UserRole::Mahasiswa)->pluck('id');
+        DraftJawaban::whereIn('user_id', $userIds)->delete();
+        JawabanMbti::whereIn('user_id', $userIds)->delete();
+        session()->flash('message', "Hasil tes seluruh mahasiswa kelas {$kelas->nama_kelas} berhasil direset.");
     }
 
     public function openImportModal(): void
