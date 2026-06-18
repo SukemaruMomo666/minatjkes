@@ -48,25 +48,6 @@
         </div>
     </section>
 
-    <section class="relative z-20 -mt-16 px-4">
-        <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-gray-100">
-                <div class="pt-4 md:pt-0">
-                    <div class="text-4xl font-extrabold text-[#2a3c5a] mb-2">10,000+</div>
-                    <div class="text-sm font-medium text-gray-500">Mahasiswa Aktif</div>
-                </div>
-                <div class="pt-4 md:pt-0">
-                    <div class="text-4xl font-extrabold text-[#2a3c5a] mb-2">50+</div>
-                    <div class="text-sm font-medium text-gray-500">Institusi Kesehatan</div>
-                </div>
-                <div class="pt-4 md:pt-0">
-                    <div class="text-4xl font-extrabold text-[#2a3c5a] mb-2">95%</div>
-                    <div class="text-sm font-medium text-gray-500">Akurasi Pemetaan</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <section id="fitur" class="py-24 px-4 bg-gray-50">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
