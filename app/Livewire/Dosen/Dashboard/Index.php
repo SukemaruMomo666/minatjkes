@@ -293,7 +293,7 @@ class Index extends Component
                 }
                 $nilai = (int) $jawaban->jawaban;
                 if ($jawaban->soal->is_unfav) {
-                    $nilai = 5 - $nilai;
+                    $nilai = 6 - $nilai;
                 }
                 $skorKategori[$namaKat]['total'] += $nilai;
                 $skorKategori[$namaKat]['jumlah']++;
@@ -302,7 +302,7 @@ class Index extends Component
 
         $skorPersen = [];
         foreach ($skorKategori as $nama => $data) {
-            $maxSkor = $data['jumlah'] * 4;
+            $maxSkor = $data['jumlah'] * 5;
             $skorPersen[$nama] = $maxSkor > 0 ? round(($data['total'] / $maxSkor) * 100) : 0;
         }
         arsort($skorPersen);
