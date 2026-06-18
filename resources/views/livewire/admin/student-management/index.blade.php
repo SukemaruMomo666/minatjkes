@@ -11,7 +11,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <a href="{{ route('admin.students.template') }}" class="sim-btn-ghost text-sm">
-                    <i class="ti ti-download"></i> Template XLS
+                    <i class="ti ti-download"></i> Template CSV
                 </a>
                 <button wire:click="openImportModal()" class="sim-btn-ghost text-sm">
                     <i class="ti ti-file-upload"></i> Import CSV
