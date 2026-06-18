@@ -134,50 +134,6 @@
         </div>
     </section>
 
-    <section class="py-24 px-4 bg-gray-50">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-xl font-bold text-gray-600">Apa Kata Mereka?</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-blue-100 text-blue-600 font-bold flex items-center justify-center rounded-full mr-4">AN</div>
-                        <div>
-                            <div class="font-bold text-gray-900">Andini Nurhaliza</div>
-                            <div class="text-xs text-gray-500">Mahasiswa Keperawatan</div>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 text-sm italic mb-4">"Dulu saya ragu apakah spesialisasi anak cocok untuk saya. Setelah ikut pemetaan di SIMINAT, saya jadi yakin dengan pilihan saya."</p>
-                    <div class="flex text-yellow-400 text-sm">★★★★★</div>
-                </div>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-indigo-100 text-indigo-600 font-bold flex items-center justify-center rounded-full mr-4">BK</div>
-                        <div>
-                            <div class="font-bold text-gray-900">Budi Kusuma</div>
-                            <div class="text-xs text-gray-500">Mahasiswa Kedokteran</div>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 text-sm italic mb-4">"Sistem navigasi karirnya sangat membantu dalam menyusun rencana studi jangka panjang. Benar-benar berbasis data!"</p>
-                    <div class="flex text-yellow-400 text-sm">★★★★★</div>
-                </div>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                    <div class="flex items-center mb-6">
-                        <div class="w-12 h-12 bg-purple-100 text-purple-600 font-bold flex items-center justify-center rounded-full mr-4">SP</div>
-                        <div>
-                            <div class="font-bold text-gray-900">Siti Pertiwi</div>
-                            <div class="text-xs text-gray-500">Alumni Farmasi</div>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 text-sm italic mb-4">"Rekomendasi institusi kesehatan di portal ini sangat akurat dengan kompetensi yang saya miliki sekarang."</p>
-                    <div class="flex text-yellow-400 text-sm">★★★★★</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <footer id="kontak" class="bg-[#3a4e6b] text-white">
         <div class="py-20 text-center px-4 border-b border-white/10">
             <h2 class="text-2xl font-bold mb-4">Siap Memetakan Masa Depan Anda?</h2>
