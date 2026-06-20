@@ -82,7 +82,7 @@
                                             <span class="font-semibold" style="color:#1A2340;">{{ $mhs['skor'] }}%</span>
                                         </td>
                                         <td class="px-5 py-3 text-right">
-                                            <a href="{{ route('dosen.mahasiswa.hasil', ['userId' => $mhs['id']]) }}"
+                                            <a href="{{ route('admin.mahasiswa.hasil', ['userId' => $mhs['id']]) }}"
                                                class="text-xs px-3 py-1.5 rounded-lg font-medium border transition-all hover:opacity-80"
                                                style="color:#1A2340;border-color:rgba(26,35,64,0.25);">
                                                 Detail

@@ -161,6 +161,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/kelas', App\Livewire\Admin\KelasManagement\Index::class)->name('admin.kelas');
         Route::get('/admin/soal', App\Livewire\Admin\SoalManagement\Index::class)->name('admin.soal');
         Route::get('/admin/pengelompokan-minat', AdminKelompok::class)->name('admin.minat.kelompok');
+        Route::get('/admin/mahasiswa/{userId}/hasil', MahasiswaResult::class)->name('admin.mahasiswa.hasil');
     });
 });
 

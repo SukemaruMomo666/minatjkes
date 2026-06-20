@@ -1,42 +1,46 @@
 <div class="flex h-screen overflow-hidden" style="background-color:#FDF6E8;">
 
     {{-- SIDEBAR --}}
-    <aside class="w-[220px] flex-col hidden md:flex shrink-0 relative" style="background-color:#1A2340;">
-        <div class="absolute inset-0 siminat-batik" style="opacity:0.05;"></div>
-        <div class="h-16 flex items-center px-5 relative" style="border-bottom:1px solid rgba(232,213,163,0.15);">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;">
-                <i class="ti ti-plus font-bold" style="color:#1A2340;font-size:15px;"></i>
-            </div>
-            <div>
-                <span class="font-bold tracking-widest text-xs block" style="color:#FDF6E8;letter-spacing:0.12em;">SIMINAT</span>
-                <span class="text-[10px]" style="color:rgba(253,246,232,0.4);">Portal Dosen</span>
-            </div>
-        </div>
-        <nav class="flex-1 px-3 py-5 space-y-1 relative">
-            <a href="{{ route('dosen.dashboard') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all hover:bg-white/10"
-               style="color:rgba(253,246,232,0.65);">
-                <i class="ti ti-layout-dashboard mr-3 text-base"></i> Dashboard
-            </a>
-            <a href="{{ route('dosen.minat.kelompok') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all hover:bg-white/10"
-               style="color:rgba(253,246,232,0.65);">
-                <i class="ti ti-chart-pie mr-3 text-base"></i> Pengelompokan
-            </a>
-        </nav>
-        <div class="p-4 relative" style="border-top:1px solid rgba(232,213,163,0.1);">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                     style="background-color:#C8922A;color:#1A2340;">
-                    {{ Auth::user()->initials() }}
+    @if(Auth::user()->role === \App\Enums\UserRole::Admin)
+        @include('partials.admin-sidebar')
+    @else
+        <aside class="w-[220px] flex-col hidden md:flex shrink-0 relative" style="background-color:#1A2340;">
+            <div class="absolute inset-0 siminat-batik" style="opacity:0.05;"></div>
+            <div class="h-16 flex items-center px-5 relative" style="border-bottom:1px solid rgba(232,213,163,0.15);">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;">
+                    <i class="ti ti-plus font-bold" style="color:#1A2340;font-size:15px;"></i>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-xs font-semibold truncate" style="color:#FDF6E8;">{{ Auth::user()->nama }}</p>
-                    <p class="text-[10px]" style="color:rgba(253,246,232,0.4);">Dosen</p>
+                <div>
+                    <span class="font-bold tracking-widest text-xs block" style="color:#FDF6E8;letter-spacing:0.12em;">SIMINAT</span>
+                    <span class="text-[10px]" style="color:rgba(253,246,232,0.4);">Portal Dosen</span>
                 </div>
             </div>
-        </div>
-    </aside>
+            <nav class="flex-1 px-3 py-5 space-y-1 relative">
+                <a href="{{ route('dosen.dashboard') }}"
+                   class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all hover:bg-white/10"
+                   style="color:rgba(253,246,232,0.65);">
+                    <i class="ti ti-layout-dashboard mr-3 text-base"></i> Dashboard
+                </a>
+                <a href="{{ route('dosen.minat.kelompok') }}"
+                   class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all hover:bg-white/10"
+                   style="color:rgba(253,246,232,0.65);">
+                    <i class="ti ti-chart-pie mr-3 text-base"></i> Pengelompokan
+                </a>
+            </nav>
+            <div class="p-4 relative" style="border-top:1px solid rgba(232,213,163,0.1);">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                         style="background-color:#C8922A;color:#1A2340;">
+                        {{ Auth::user()->initials() }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-semibold truncate" style="color:#FDF6E8;">{{ Auth::user()->nama }}</p>
+                        <p class="text-[10px]" style="color:rgba(253,246,232,0.4);">Dosen</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    @endif
 
     {{-- MAIN --}}
     <main class="flex-1 flex flex-col overflow-hidden relative">
@@ -45,7 +49,7 @@
         <header class="h-16 flex items-center justify-between px-5 md:px-8 shrink-0"
                 style="background-color:#1A2340;border-bottom:1px solid rgba(232,213,163,0.15);">
             <div class="flex items-center gap-3">
-                <a href="{{ route('dosen.dashboard') }}"
+                <a href="{{ Auth::user()->role === \App\Enums\UserRole::Admin ? route('admin.minat.kelompok') : route('dosen.minat.kelompok') }}"
                    class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:bg-white/10"
                    style="color:rgba(253,246,232,0.65);">
                     <i class="ti ti-arrow-left text-sm"></i> Kembali
