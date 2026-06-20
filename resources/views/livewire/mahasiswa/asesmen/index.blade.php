@@ -1,11 +1,10 @@
-<div class="flex h-screen overflow-hidden" style="background-color:#FDF6E8;">
+﻿<div class="flex h-screen overflow-hidden" style="background-color:#FDF6E8;">
 
     {{-- SIDEBAR --}}
     <aside class="w-[220px] flex-col hidden md:flex shrink-0 relative" style="background-color:#1A2340;">
         <div class="absolute inset-0 siminat-batik" style="opacity:0.05;"></div>
         <div class="h-16 flex items-center px-5 relative" style="border-bottom:1px solid rgba(232,213,163,0.15);">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;">
-                <i class="ti ti-plus font-bold" style="color:#1A2340;font-size:15px;"></i>
+            <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A2340" stroke-width="3.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
             </div>
             <span class="font-bold tracking-widest text-sm" style="color:#FDF6E8;letter-spacing:0.15em;">SIMINAT</span>
         </div>
@@ -73,7 +72,7 @@
             <div class="max-w-3xl mx-auto space-y-6">
 
                 <div>
-                    <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#C8922A;">SIMINAT • ASESMEN</p>
+                    <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#C8922A;">SIMINAT â€¢ ASESMEN</p>
                     <h1 class="text-2xl font-display font-bold" style="color:#1A2340;">Pusat Asesmen</h1>
                     <p class="text-sm mt-1" style="color:#6B7494;">Selesaikan kedua tes berikut untuk mendapatkan pemetaan potensi lengkap kamu.</p>
                 </div>
@@ -103,7 +102,7 @@
                                 </div>
                                 <div>
                                     <h2 class="text-lg font-bold" style="color:#1A2340;">Tes Minat &amp; Bakat</h2>
-                                    <p class="text-xs mt-0.5" style="color:#6B7494;">{{ $totalSoalMinat }} soal penilaian skala 1–4</p>
+                                    <p class="text-xs mt-0.5" style="color:#6B7494;">{{ $totalSoalMinat }} soal penilaian skala 1â€“4</p>
                                 </div>
                             </div>
                             @if($statusMinat === 'selesai')
@@ -272,3 +271,4 @@
         </a>
     </nav>
 </div>
+

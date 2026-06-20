@@ -1,11 +1,10 @@
-<div class="flex h-screen overflow-hidden" style="background-color:#FDF6E8;">
+﻿<div class="flex h-screen overflow-hidden" style="background-color:#FDF6E8;">
 
     {{-- ===== SIDEBAR ===== --}}
     <aside class="w-[220px] flex-col hidden md:flex shrink-0 relative" style="background-color:#1A2340;">
         <div class="absolute inset-0 siminat-batik" style="opacity:0.05;"></div>
         <div class="h-16 flex items-center px-5 relative" style="border-bottom:1px solid rgba(232,213,163,0.15);">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;">
-                <i class="ti ti-plus font-bold" style="color:#1A2340;font-size:15px;"></i>
+            <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A2340" stroke-width="3.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
             </div>
             <span class="font-bold tracking-widest text-sm" style="color:#FDF6E8;letter-spacing:0.15em;">SIMINAT</span>
         </div>
@@ -70,26 +69,26 @@
                         <h1 class="font-display text-2xl md:text-3xl font-bold mb-1" style="color:#FDF6E8;">
                             Rapor Potensi Diri
                         </h1>
-                        <p class="text-xs md:text-sm" style="color:rgba(253,246,232,0.55);">Pemetaan Minat &amp; Bakat + Kepribadian MBTI — {{ now()->translatedFormat('d F Y') }}</p>
+                        <p class="text-xs md:text-sm" style="color:rgba(253,246,232,0.55);">Pemetaan Minat &amp; Bakat + Kepribadian MBTI â€” {{ now()->translatedFormat('d F Y') }}</p>
                     </div>
                     {{-- Identity Card --}}
                     <div class="flex-shrink-0 rounded-xl px-5 py-3.5 grid grid-cols-2 gap-x-6 gap-y-2"
                          style="background-color:rgba(255,255,255,0.06);border:1px solid rgba(232,213,163,0.15);">
                         <div>
                             <p class="text-[9px] font-bold uppercase tracking-widest mb-0.5" style="color:rgba(253,246,232,0.4);">Nama</p>
-                            <p class="text-xs font-semibold" style="color:#FDF6E8;">{{ $namaLengkap ?: '—' }}</p>
+                            <p class="text-xs font-semibold" style="color:#FDF6E8;">{{ $namaLengkap ?: 'â€”' }}</p>
                         </div>
                         <div>
                             <p class="text-[9px] font-bold uppercase tracking-widest mb-0.5" style="color:rgba(253,246,232,0.4);">NIM</p>
-                            <p class="text-xs font-semibold font-mono" style="color:#FDF6E8;">{{ $nimNidn ?: '—' }}</p>
+                            <p class="text-xs font-semibold font-mono" style="color:#FDF6E8;">{{ $nimNidn ?: 'â€”' }}</p>
                         </div>
                         <div>
                             <p class="text-[9px] font-bold uppercase tracking-widest mb-0.5" style="color:rgba(253,246,232,0.4);">Kelas</p>
-                            <p class="text-xs font-semibold" style="color:#FDF6E8;">{{ $namaKelas ?: '—' }}</p>
+                            <p class="text-xs font-semibold" style="color:#FDF6E8;">{{ $namaKelas ?: 'â€”' }}</p>
                         </div>
                         <div>
                             <p class="text-[9px] font-bold uppercase tracking-widest mb-0.5" style="color:rgba(253,246,232,0.4);">Jenis Kelamin</p>
-                            <p class="text-xs font-semibold" style="color:#FDF6E8;">{{ $jenisKelamin ?: '—' }}</p>
+                            <p class="text-xs font-semibold" style="color:#FDF6E8;">{{ $jenisKelamin ?: 'â€”' }}</p>
                         </div>
                     </div>
                 </div>
@@ -98,9 +97,9 @@
             {{-- Content --}}
             <div class="px-5 py-6 md:px-8 md:py-8 max-w-5xl mx-auto space-y-6 md:space-y-7">
 
-                {{-- ══════════════════════════════════════════════════════ --}}
+                {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
                 {{-- SECTION 1: PEMETAAN MINAT & BAKAT                     --}}
-                {{-- ══════════════════════════════════════════════════════ --}}
+                {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
@@ -175,9 +174,9 @@
                     </div>
                 </div>
 
-                {{-- ══════════════════════════════════════════════════════ --}}
+                {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
                 {{-- SECTION 2: PROFIL KEPRIBADIAN MBTI                    --}}
-                {{-- ══════════════════════════════════════════════════════ --}}
+                {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
                 @if($mbtiResult)
                 <div>
                     <div class="flex items-center gap-2 mb-4">
@@ -231,10 +230,10 @@
                                     <div>
                                         <div class="flex justify-between text-[10px] font-bold mb-1">
                                             <span style="color:{{ $data['dominan'] === $a ? '#1A2340' : '#9AA3BC' }};">
-                                                {{ $a }} — {{ $aLabel }} <span class="font-mono">{{ $data[$a.'_persen'] }}%</span>
+                                                {{ $a }} â€” {{ $aLabel }} <span class="font-mono">{{ $data[$a.'_persen'] }}%</span>
                                             </span>
                                             <span style="color:{{ $data['dominan'] === $b ? '#1A2340' : '#9AA3BC' }};">
-                                                <span class="font-mono">{{ $data[$b.'_persen'] }}%</span> {{ $bLabel }} — {{ $b }}
+                                                <span class="font-mono">{{ $data[$b.'_persen'] }}%</span> {{ $bLabel }} â€” {{ $b }}
                                             </span>
                                         </div>
                                         <div class="w-full h-2 rounded-full overflow-hidden flex" style="background-color:rgba(26,35,64,0.08);">
@@ -275,9 +274,9 @@
                 </div>
                 @endif
 
-                {{-- ══════════════════════════════════════════════════════ --}}
+                {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
                 {{-- SECTION 3: KESIMPULAN TERPADU                         --}}
-                {{-- ══════════════════════════════════════════════════════ --}}
+                {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
                 <div class="sim-card p-5 md:p-6 border-t-4" style="border-top-color:#C8922A;">
                     <h2 class="font-display text-base md:text-lg font-bold mb-2 flex items-center gap-2" style="color:#1A2340;">
                         <i class="ti ti-layout-list text-lg" style="color:#C8922A;"></i>
@@ -322,9 +321,9 @@
                     </div>
                 </div>
 
-                {{-- ══════════════════════════════════════════════════════ --}}
+                {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
                 {{-- SECTION 4: REKOMENDASI KEGIATAN                       --}}
-                {{-- ══════════════════════════════════════════════════════ --}}
+                {{-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• --}}
                 @if(!empty($rekomendasiKegiatanData))
                 <div class="sim-card p-5 md:p-6 border-t-4" style="border-top-color:#2D3F6B;">
                     <h2 class="font-display text-base md:text-lg font-bold mb-1 flex items-center gap-2" style="color:#1A2340;">
@@ -412,3 +411,4 @@
         });
     });
 </script>
+
