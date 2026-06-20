@@ -3,8 +3,8 @@
 
     {{-- Logo --}}
     <div class="h-16 flex items-center px-5 relative" style="border-bottom:1px solid rgba(232,213,163,0.15);">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;">
-            <i class="ti ti-plus font-bold" style="color:#1A2340;font-size:15px;"></i>
+        <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;">
+            <i class="ti ti-plus font-bold" style="color:#1A2340;font-size:17px;"></i>
         </div>
         <div>
             <span class="font-bold tracking-widest text-xs block" style="color:#FDF6E8;letter-spacing:0.12em;">SIMINAT</span>
