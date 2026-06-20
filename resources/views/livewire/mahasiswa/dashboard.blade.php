@@ -1,10 +1,11 @@
-﻿<div class="flex h-screen overflow-hidden" style="background-color:#FDF6E8;">
+<div class="flex h-screen overflow-hidden" style="background-color:#FDF6E8;">
 
     {{-- ===== SIDEBAR (HANYA MUNCUL DI LAPTOP/TABLET) ===== --}}
     <aside class="w-[220px] flex-col hidden md:flex shrink-0 relative" style="background-color:#1A2340;">
         <div class="absolute inset-0 siminat-batik" style="opacity:0.05;"></div>
         <div class="h-16 flex items-center px-5 relative" style="border-bottom:1px solid rgba(232,213,163,0.15);">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A2340" stroke-width="3.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3 shrink-0" style="background-color:#C8922A;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A2340" stroke-width="3.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
             </div>
             <span class="font-bold tracking-widest text-sm" style="color:#FDF6E8;letter-spacing:0.15em;">SIMINAT</span>
         </div>
@@ -79,7 +80,7 @@
                         @elseif($statusTes === 'proses')
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] md:text-xs font-semibold mb-4 shadow-sm"
                                   style="background-color:rgba(200,146,42,0.2);color:#C8922A;border:1px solid rgba(200,146,42,0.3);">
-                                <i class="ti ti-clock text-sm"></i> Sedang Berlangsung â€” {{ $progressPersen }}%
+                                <i class="ti ti-clock text-sm"></i> Sedang Berlangsung — {{ $progressPersen }}%
                             </span>
                         @else
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] md:text-xs font-semibold mb-4 shadow-sm"
@@ -89,7 +90,7 @@
                         @endif
 
                         <h1 class="font-display text-2xl md:text-3xl font-bold mb-1.5 md:mb-2 leading-snug" style="color:#FDF6E8;">
-                            Halo, {{ $namaPanggil }}! <span>ðŸ‘‹</span>
+                            Halo, {{ $namaPanggil }}! <span>👋</span>
                         </h1>
                         <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mb-5">
                             @if($nimNidn)
@@ -147,7 +148,7 @@
                                     @endif
                                 </p>
                                 <p class="text-[10px] md:text-xs mt-0.5" style="color:#6B7494;">
-                                    @if($statusTes === 'selesai') 100% selesai âœ“
+                                    @if($statusTes === 'selesai') 100% selesai ✓
                                     @elseif($statusTes === 'proses') sedang berlangsung
                                     @else yuk mulai sekarang
                                     @endif
@@ -178,7 +179,7 @@
                                     @endif
                                 </p>
                                 <p class="text-[10px] md:text-xs mt-0.5" style="color:#6B7494;">
-                                    @if($statusMbti === 'selesai') 100% selesai âœ“
+                                    @if($statusMbti === 'selesai') 100% selesai ✓
                                     @elseif($statusMbti === 'proses') sedang berlangsung
                                     @elseif($statusTes !== 'selesai') selesaikan minat dulu
                                     @else yuk mulai sekarang
@@ -208,7 +209,7 @@
                         <div class="mt-3 pt-3 grid grid-cols-2 gap-2" style="border-top:1px solid rgba(26,35,64,0.06);">
                             <div>
                                 <p class="text-[9px] md:text-[10px] font-semibold uppercase tracking-wider mb-0.5" style="color:#6B7494;">Kelas</p>
-                                <p class="text-xs md:text-sm font-semibold" style="color:#1A2340;">{{ $namaKelas ?: 'â€”' }}</p>
+                                <p class="text-xs md:text-sm font-semibold" style="color:#1A2340;">{{ $namaKelas ?: '—' }}</p>
                             </div>
                             <div>
                                 <p class="text-[9px] md:text-[10px] font-semibold uppercase tracking-wider mb-0.5" style="color:#6B7494;">Jenis Kelamin</p>
@@ -465,7 +466,7 @@
                             ],
                             [
                                 'q' => 'Ada berapa tes yang harus saya kerjakan?',
-                                'a' => 'Ada 2 tes yang perlu dikerjakan secara berurutan: (1) Kuesioner Minat & Bakat â€” berisi ' . \App\Models\Soal::where('is_active', true)->count() . ' soal pilihan skala 1â€“4, dan (2) Tes Kepribadian MBTI â€” berisi ' . \App\Models\SoalMbti::where('is_active', true)->count() . ' soal pilihan A atau B. Tes MBTI baru bisa dimulai setelah Kuesioner Minat & Bakat selesai.',
+                                'a' => 'Ada 2 tes yang perlu dikerjakan secara berurutan: (1) Kuesioner Minat & Bakat — berisi ' . \App\Models\Soal::where('is_active', true)->count() . ' soal pilihan skala 1–4, dan (2) Tes Kepribadian MBTI — berisi ' . \App\Models\SoalMbti::where('is_active', true)->count() . ' soal pilihan A atau B. Tes MBTI baru bisa dimulai setelah Kuesioner Minat & Bakat selesai.',
                             ],
                             [
                                 'q' => 'Apakah ada batas waktu untuk mengerjakan tes?',
@@ -477,11 +478,11 @@
                             ],
                             [
                                 'q' => 'Apa perbedaan Kuesioner Minat & Bakat dengan Tes MBTI?',
-                                'a' => 'Kuesioner Minat & Bakat mengukur seberapa kuat ketertarikanmu di 9 bidang (seperti Keperawatan Klinis, Riset, Organisasi, Seni, dll) menggunakan skala penilaian 1â€“4. Sedangkan Tes MBTI mengukur tipe kepribadianmu melalui 4 dimensi (Extraversion/Introversion, Sensing/Intuition, Thinking/Feeling, Judging/Perceiving) yang menghasilkan kombinasi 4 huruf seperti INFJ atau ESTP.',
+                                'a' => 'Kuesioner Minat & Bakat mengukur seberapa kuat ketertarikanmu di 9 bidang (seperti Keperawatan Klinis, Riset, Organisasi, Seni, dll) menggunakan skala penilaian 1–4. Sedangkan Tes MBTI mengukur tipe kepribadianmu melalui 4 dimensi (Extraversion/Introversion, Sensing/Intuition, Thinking/Feeling, Judging/Perceiving) yang menghasilkan kombinasi 4 huruf seperti INFJ atau ESTP.',
                             ],
                             [
                                 'q' => 'Bagaimana cara membaca hasil rapor saya?',
-                                'a' => 'Rapor Potensi Diri terdiri dari 4 bagian: (1) Peta Kompetensi â€” radar chart yang menampilkan skor semua bidang minatmu; (2) Rincian Per Bidang â€” daftar lengkap persentase tiap bidang dengan label "Kelebihan" (hijau) untuk 3 tertinggi dan "Perlu Dikembangkan" (merah) untuk 3 terendah; (3) Profil Kepribadian MBTI â€” tipe kepribadianmu beserta uraian karakteristik dan potensi karier; (4) Kesimpulan Terpadu â€” gabungan analisis dari kedua tes beserta rekomendasi kegiatan yang cocok untukmu.',
+                                'a' => 'Rapor Potensi Diri terdiri dari 4 bagian: (1) Peta Kompetensi — radar chart yang menampilkan skor semua bidang minatmu; (2) Rincian Per Bidang — daftar lengkap persentase tiap bidang dengan label "Kelebihan" (hijau) untuk 3 tertinggi dan "Perlu Dikembangkan" (merah) untuk 3 terendah; (3) Profil Kepribadian MBTI — tipe kepribadianmu beserta uraian karakteristik dan potensi karier; (4) Kesimpulan Terpadu — gabungan analisis dari kedua tes beserta rekomendasi kegiatan yang cocok untukmu.',
                             ],
                             [
                                 'q' => 'Siapa saja yang bisa melihat hasil tes saya?',
