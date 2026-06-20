@@ -22,7 +22,7 @@
             <a href="{{ route('dosen.minat.kelompok') }}"
                class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all hover:bg-white/10"
                style="color:rgba(253,246,232,0.65);">
-                <i class="ti ti-chart-pie mr-3 text-base"></i> Pengelompokan
+                <i class="ti ti-chart-pie mr-3 text-base"></i> Pengelompokan Minat
             </a>
         </nav>
         <div class="p-4 relative" style="border-top:1px solid rgba(232,213,163,0.1);">
