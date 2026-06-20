@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Livewire\Admin\Minat\Kelompok as AdminKelompok;
 use App\Livewire\Dosen\Hasil\MahasiswaResult;
 use App\Livewire\Dosen\Minat\Kelompok;
 use App\Livewire\Mahasiswa\Dashboard\Index;
@@ -159,6 +160,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/lecturers', App\Livewire\Admin\LecturerManagement\Index::class)->name('admin.lecturers');
         Route::get('/admin/kelas', App\Livewire\Admin\KelasManagement\Index::class)->name('admin.kelas');
         Route::get('/admin/soal', App\Livewire\Admin\SoalManagement\Index::class)->name('admin.soal');
+        Route::get('/admin/pengelompokan-minat', AdminKelompok::class)->name('admin.minat.kelompok');
     });
 });
 

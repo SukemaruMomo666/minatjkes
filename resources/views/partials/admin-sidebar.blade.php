@@ -64,6 +64,15 @@
             <i class="ti ti-clipboard-list mr-3 text-base"></i> Bank Soal
         </a>
 
+        <a href="{{ route('admin.minat.kelompok') }}"
+           class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all
+           {{ request()->routeIs('admin.minat.kelompok') ? '' : 'hover:bg-white/10' }}"
+           style="{{ request()->routeIs('admin.minat.kelompok')
+               ? 'background-color:rgba(200,146,42,0.15);color:#C8922A;border-left:3px solid #C8922A;'
+               : 'color:rgba(253,246,232,0.65);' }}">
+            <i class="ti ti-chart-pie mr-3 text-base"></i> Pengelompokan Minat
+        </a>
+
     </nav>
 
     {{-- Footer --}}
