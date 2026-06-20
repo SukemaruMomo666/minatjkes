@@ -2,6 +2,7 @@
 
 use App\Enums\UserRole;
 use App\Livewire\Dosen\Hasil\MahasiswaResult;
+use App\Livewire\Dosen\Minat\Kelompok;
 use App\Livewire\Mahasiswa\Dashboard\Index;
 use App\Livewire\Mahasiswa\Hasil\ResultPage;
 use App\Livewire\Mahasiswa\Tes\TesMbti;
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:dosen')->group(function () {
         Route::get('/dosen/dashboard', App\Livewire\Dosen\Dashboard\Index::class)->name('dosen.dashboard');
         Route::get('/dosen/mahasiswa/{userId}/hasil', MahasiswaResult::class)->name('dosen.mahasiswa.hasil');
+        Route::get('/dosen/pengelompokan-minat', Kelompok::class)->name('dosen.minat.kelompok');
     });
 
     // Admin routes

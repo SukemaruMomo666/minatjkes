@@ -19,6 +19,11 @@
                style="background-color:rgba(200,146,42,0.15);color:#C8922A;border-left:3px solid #C8922A;">
                 <i class="ti ti-layout-dashboard mr-3 text-base"></i> Dashboard
             </a>
+            <a href="{{ route('dosen.minat.kelompok') }}"
+               class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all hover:bg-white/10"
+               style="color:rgba(253,246,232,0.65);">
+                <i class="ti ti-chart-pie mr-3 text-base"></i> Pengelompokan
+            </a>
         </nav>
         <div class="p-4 relative" style="border-top:1px solid rgba(232,213,163,0.1);">
             <div class="flex items-center gap-3">
