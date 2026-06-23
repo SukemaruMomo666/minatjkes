@@ -336,17 +336,17 @@
 
                                     {{-- Badge Status --}}
                                     @if($sertifikat->status === 'disetujui')
-                                        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0"
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0"
                                               style="background-color:rgba(46,125,85,0.1);color:#2E7D55;border:1px solid rgba(46,125,85,0.2);">
                                             <i class="ti ti-circle-check text-xs"></i> Disetujui
                                         </span>
                                     @elseif($sertifikat->status === 'ditolak')
-                                        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0"
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0"
                                               style="background-color:rgba(180,69,47,0.08);color:#B4452F;border:1px solid rgba(180,69,47,0.2);">
                                             <i class="ti ti-x text-xs"></i> Ditolak
                                         </span>
                                     @else
-                                        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0"
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0"
                                               style="background-color:rgba(200,146,42,0.1);color:#C8922A;border:1px solid rgba(200,146,42,0.2);">
                                             <i class="ti ti-clock text-xs"></i> Menunggu
                                         </span>
