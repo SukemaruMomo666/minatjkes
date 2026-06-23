@@ -220,16 +220,14 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-3">
-                                            <div class="flex items-center gap-2">
-                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold"
-                                                      style="background-color:{{ $mhs['file_akademik'] ? 'rgba(46,125,85,0.1)' : 'rgba(26,35,64,0.06)' }};color:{{ $mhs['file_akademik'] ? '#2E7D55' : '#6B7494' }};">
-                                                    <i class="ti ti-school"></i> Akd
+                                            @if($mhs['jumlah_sertifikat'] > 0)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold"
+                                                      style="background-color:rgba(46,125,85,0.1);color:#2E7D55;">
+                                                    <i class="ti ti-certificate"></i> {{ $mhs['jumlah_sertifikat'] }} file
                                                 </span>
-                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold"
-                                                      style="background-color:{{ $mhs['file_non_akademik'] ? 'rgba(200,146,42,0.1)' : 'rgba(26,35,64,0.06)' }};color:{{ $mhs['file_non_akademik'] ? '#C8922A' : '#6B7494' }};">
-                                                    <i class="ti ti-trophy"></i> Non
-                                                </span>
-                                            </div>
+                                            @else
+                                                <span class="text-[10px]" style="color:#6B7494;">—</span>
+                                            @endif
                                         </td>
                                         <td class="px-6 py-3">
                                             <button wire:click="openDetail({{ $mhs['user_id'] }})"
@@ -332,52 +330,94 @@
                 {{-- Sertifikat --}}
                 <div>
                     <p class="text-xs font-bold mb-3" style="color:#1A2340;"><i class="ti ti-certificate mr-1.5 text-[#C8922A]"></i>Portofolio Sertifikat</p>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="p-3 rounded-xl" style="background-color:rgba(45,63,107,0.05);border:1px solid rgba(45,63,107,0.12);">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="ti ti-school text-sm" style="color:#2D3F6B;"></i>
-                                <span class="text-xs font-semibold" style="color:#1A2340;">Akademik</span>
-                            </div>
-                            @if($detailData['file_akademik'])
-                                <div class="flex gap-2">
-                                    <a href="{{ Storage::url($detailData['file_akademik']) }}" target="_blank" rel="noopener noreferrer"
-                                       class="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition-all hover:opacity-80"
-                                       style="background-color:#2D3F6B;color:#FDF6E8;">
-                                        <i class="ti ti-eye"></i> Lihat
-                                    </a>
-                                    <a href="{{ Storage::url($detailData['file_akademik']) }}" download
-                                       class="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition-all hover:opacity-80"
-                                       style="background-color:rgba(45,63,107,0.1);color:#2D3F6B;">
-                                        <i class="ti ti-download"></i> Unduh
-                                    </a>
-                                </div>
-                            @else
-                                <p class="text-[10px]" style="color:#B4452F;">Tidak ada data</p>
-                            @endif
+
+                    @if(empty($detailData['sertifikats']))
+                        <div class="p-4 rounded-xl text-center text-xs" style="background-color:rgba(26,35,64,0.04);color:#6B7494;">
+                            Belum ada sertifikat yang diunggah.
                         </div>
-                        <div class="p-3 rounded-xl" style="background-color:rgba(200,146,42,0.05);border:1px solid rgba(200,146,42,0.15);">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="ti ti-trophy text-sm" style="color:#C8922A;"></i>
-                                <span class="text-xs font-semibold" style="color:#1A2340;">Non-Akademik</span>
-                            </div>
-                            @if($detailData['file_non_akademik'])
-                                <div class="flex gap-2">
-                                    <a href="{{ Storage::url($detailData['file_non_akademik']) }}" target="_blank" rel="noopener noreferrer"
-                                       class="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition-all hover:opacity-80"
-                                       style="background-color:#C8922A;color:#1A2340;">
-                                        <i class="ti ti-eye"></i> Lihat
-                                    </a>
-                                    <a href="{{ Storage::url($detailData['file_non_akademik']) }}" download
-                                       class="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition-all hover:opacity-80"
-                                       style="background-color:rgba(200,146,42,0.1);color:#C8922A;">
-                                        <i class="ti ti-download"></i> Unduh
-                                    </a>
+                    @else
+                        <div class="space-y-2">
+                            @foreach($detailData['sertifikats'] as $sert)
+                                <div class="p-3 rounded-xl" style="background-color:rgba(26,35,64,0.03);border:1px solid rgba(26,35,64,0.08);">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                                             style="{{ $sert['jenis'] === 'akademik' ? 'background-color:rgba(45,63,107,0.08);' : 'background-color:rgba(200,146,42,0.1);' }}">
+                                            <i class="ti {{ $sert['jenis'] === 'akademik' ? 'ti-school' : 'ti-trophy' }} text-sm"
+                                               style="{{ $sert['jenis'] === 'akademik' ? 'color:#2D3F6B;' : 'color:#C8922A;' }}"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs font-bold truncate" style="color:#1A2340;">{{ $sert['nama_sertifikat'] }}</p>
+                                            <p class="text-[10px] mt-0.5" style="color:#6B7494;">
+                                                {{ $sert['jenis'] === 'akademik' ? 'Akademik' : 'Non-Akademik' }}
+                                            </p>
+                                            @if($sert['status'] === 'ditolak' && $sert['catatan'])
+                                                <p class="text-[10px] mt-1 font-semibold" style="color:#B4452F;">
+                                                    <i class="ti ti-info-circle"></i> {{ $sert['catatan'] }}
+                                                </p>
+                                            @endif
+                                        </div>
+                                        {{-- Badge status --}}
+                                        @if($sert['status'] === 'disetujui')
+                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0"
+                                                  style="background-color:rgba(46,125,85,0.1);color:#2E7D55;">
+                                                <i class="ti ti-circle-check"></i> Disetujui
+                                            </span>
+                                        @elseif($sert['status'] === 'ditolak')
+                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0"
+                                                  style="background-color:rgba(180,69,47,0.08);color:#B4452F;">
+                                                <i class="ti ti-x"></i> Ditolak
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0"
+                                                  style="background-color:rgba(200,146,42,0.1);color:#C8922A;">
+                                                <i class="ti ti-clock"></i> Pending
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    {{-- Aksi --}}
+                                    <div class="flex items-center gap-2 mt-2.5 pt-2.5" style="border-top:1px solid rgba(26,35,64,0.06);">
+                                        <a href="{{ Storage::url($sert['file_path']) }}" target="_blank" rel="noopener noreferrer"
+                                           class="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg"
+                                           style="background-color:rgba(45,63,107,0.08);color:#2D3F6B;">
+                                            <i class="ti ti-eye"></i> Lihat
+                                        </a>
+                                        <a href="{{ Storage::url($sert['file_path']) }}" download
+                                           class="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg"
+                                           style="background-color:rgba(26,35,64,0.05);color:#6B7494;">
+                                            <i class="ti ti-download"></i> Unduh
+                                        </a>
+                                        @if($sert['status'] === 'disetujui')
+                                            <button wire:click="tolakSertifikat({{ $sert['id'] }})"
+                                                    wire:confirm="Batalkan persetujuan sertifikat ini?"
+                                                    class="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg ml-auto"
+                                                    style="background-color:rgba(180,69,47,0.08);color:#B4452F;">
+                                                <i class="ti ti-x"></i> Tolak
+                                            </button>
+                                        @elseif($sert['status'] === 'ditolak')
+                                            <button wire:click="setujuiSertifikat({{ $sert['id'] }})"
+                                                    class="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg ml-auto"
+                                                    style="background-color:rgba(46,125,85,0.1);color:#2E7D55;">
+                                                <i class="ti ti-circle-check"></i> Setujui
+                                            </button>
+                                        @else
+                                            <button wire:click="setujuiSertifikat({{ $sert['id'] }})"
+                                                    class="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg ml-auto"
+                                                    style="background-color:rgba(46,125,85,0.1);color:#2E7D55;">
+                                                <i class="ti ti-circle-check"></i> Setujui
+                                            </button>
+                                            <button wire:click="tolakSertifikat({{ $sert['id'] }})"
+                                                    wire:confirm="Tolak sertifikat ini?"
+                                                    class="flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1.5 rounded-lg"
+                                                    style="background-color:rgba(180,69,47,0.08);color:#B4452F;">
+                                                <i class="ti ti-x"></i> Tolak
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
-                            @else
-                                <p class="text-[10px]" style="color:#B4452F;">Tidak ada data</p>
-                            @endif
+                            @endforeach
                         </div>
-                    </div>
+                    @endif
                 </div>
 
             </div>

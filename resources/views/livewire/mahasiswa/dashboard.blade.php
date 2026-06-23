@@ -221,171 +221,163 @@
 
                 {{-- === KARTU PORTOFOLIO === --}}
                 <div>
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                             style="background-color:rgba(200,146,42,0.1);">
-                            <i class="ti ti-certificate text-lg" style="color:#C8922A;"></i>
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                                 style="background-color:rgba(200,146,42,0.1);">
+                                <i class="ti ti-certificate text-lg" style="color:#C8922A;"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-sm md:text-base font-bold" style="color:#1A2340;">Portofolio Sertifikat</h2>
+                                <p class="text-[10px] md:text-xs" style="color:#6B7494;">Unggah sertifikat prestasi atau bukti bakat kamu (PDF/JPG/PNG, maks. 2MB)</p>
+                            </div>
                         </div>
-                        <div>
-                            <h2 class="text-sm md:text-base font-bold" style="color:#1A2340;">Portofolio Sertifikat</h2>
-                            <p class="text-[10px] md:text-xs" style="color:#6B7494;">Unggah sertifikat prestasi atau bukti bakat kamu (PDF/JPG/PNG, maks. 2MB)</p>
-                        </div>
+                        <button wire:click="toggleTambahForm"
+                                class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all"
+                                style="background-color:#C8922A;color:#1A2340;">
+                            <i class="ti ti-plus text-sm"></i>
+                            <span class="hidden sm:inline">Tambah Sertifikat</span>
+                        </button>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    @if(session('sertifikat_success'))
+                        <div class="mb-4 px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2"
+                             style="background-color:rgba(46,125,85,0.1);color:#2E7D55;border:1px solid rgba(46,125,85,0.2);">
+                            <i class="ti ti-circle-check"></i> {{ session('sertifikat_success') }}
+                        </div>
+                    @endif
 
-                        {{-- Akademik --}}
-                        @php $labelA = 'fileBakatAkademik'; @endphp
-                        <div class="sim-card p-4 md:p-5 border-2" style="border-color:rgba(45,63,107,0.2);">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2">
-                                    <i class="ti ti-school text-base" style="color:#2D3F6B;"></i>
-                                    <span class="text-xs font-bold" style="color:#1A2340;">Sertifikat Akademik</span>
+                    {{-- Form Tambah Sertifikat --}}
+                    @if($showTambahForm)
+                        <div class="sim-card p-4 md:p-5 mb-4 border-2" style="border-color:rgba(200,146,42,0.3);">
+                            <h3 class="text-xs font-bold mb-3" style="color:#1A2340;">Tambah Sertifikat Baru</h3>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-[10px] font-semibold mb-1 uppercase tracking-wider" style="color:#6B7494;">Nama Sertifikat</label>
+                                    <input type="text" wire:model="namaBaru"
+                                           placeholder="Contoh: Juara 1 Lomba Keperawatan"
+                                           class="w-full px-3 py-2 rounded-lg text-xs border outline-none"
+                                           style="border-color:rgba(26,35,64,0.15);color:#1A2340;background:#fff;">
+                                    @error('namaBaru') <p class="text-[10px] mt-1 font-semibold" style="color:#B4452F;">{{ $message }}</p> @enderror
                                 </div>
-                                @if($fileBakatAkademikPath)
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-                                          style="background-color:rgba(46,125,85,0.1);color:#2E7D55;border:1px solid rgba(46,125,85,0.2);">
-                                        <i class="ti ti-circle-check text-xs"></i> Ada
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-                                          style="background-color:rgba(180,69,47,0.08);color:#B4452F;border:1px solid rgba(180,69,47,0.2);">
-                                        <i class="ti ti-x text-xs"></i> Belum Ada
-                                    </span>
-                                @endif
+
+                                <div>
+                                    <label class="block text-[10px] font-semibold mb-1 uppercase tracking-wider" style="color:#6B7494;">Jenis</label>
+                                    <select wire:model="jenisBaru"
+                                            class="w-full px-3 py-2 rounded-lg text-xs border outline-none"
+                                            style="border-color:rgba(26,35,64,0.15);color:#1A2340;background:#fff;">
+                                        <option value="akademik">Akademik</option>
+                                        <option value="non_akademik">Non-Akademik</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-semibold mb-1 uppercase tracking-wider" style="color:#6B7494;">File (PDF/JPG/PNG, maks. 2MB)</label>
+                                    <input type="file" wire:model="fileBaru"
+                                           accept=".pdf,.jpg,.jpeg,.png"
+                                           class="block w-full text-xs text-gray-500
+                                                  file:mr-3 file:py-1.5 file:px-3
+                                                  file:rounded-lg file:border-0
+                                                  file:text-xs file:font-semibold
+                                                  file:bg-[#1A2340] file:text-[#FDF6E8]
+                                                  hover:file:bg-[#2D3F6B] file:transition-all cursor-pointer">
+                                    @error('fileBaru') <p class="text-[10px] mt-1 font-semibold" style="color:#B4452F;">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div class="flex gap-2 pt-1">
+                                    <button wire:click="uploadSertifikat"
+                                            wire:loading.attr="disabled"
+                                            class="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
+                                            style="background-color:#1A2340;color:#FDF6E8;">
+                                        <span wire:loading.remove wire:target="uploadSertifikat">
+                                            <i class="ti ti-upload mr-1"></i>Unggah
+                                        </span>
+                                        <span wire:loading wire:target="uploadSertifikat">
+                                            <i class="ti ti-loader animate-spin mr-1"></i>Mengunggah...
+                                        </span>
+                                    </button>
+                                    <button wire:click="toggleTambahForm"
+                                            class="px-4 py-2 rounded-xl text-xs font-bold transition-all"
+                                            style="background-color:rgba(26,35,64,0.08);color:#6B7494;">
+                                        Batal
+                                    </button>
+                                </div>
                             </div>
+                        </div>
+                    @endif
 
-                            @if(session('sertifikat_message_akademik'))
-                                <div class="mb-3 px-3 py-2 rounded-lg text-[10px] font-semibold flex items-center gap-1.5"
-                                     style="background-color:rgba(46,125,85,0.1);color:#2E7D55;">
-                                    <i class="ti ti-circle-check"></i> {{ session('sertifikat_message_akademik') }}
-                                </div>
-                            @endif
+                    {{-- Daftar Sertifikat --}}
+                    @if($sertifikats->isEmpty())
+                        <div class="sim-card p-6 text-center">
+                            <i class="ti ti-certificate-off text-3xl mb-2" style="color:rgba(107,116,148,0.3);"></i>
+                            <p class="text-xs font-semibold" style="color:#6B7494;">Belum ada sertifikat yang diunggah.</p>
+                            <p class="text-[10px] mt-1" style="color:rgba(107,116,148,0.7);">Klik "Tambah Sertifikat" untuk mulai mengunggah.</p>
+                        </div>
+                    @else
+                        <div class="space-y-2">
+                            @foreach($sertifikats as $sertifikat)
+                                <div class="sim-card p-3 md:p-4 flex items-center gap-3">
+                                    {{-- Ikon jenis --}}
+                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                                         style="{{ $sertifikat->jenis === 'akademik' ? 'background-color:rgba(45,63,107,0.08);' : 'background-color:rgba(200,146,42,0.1);' }}">
+                                        <i class="ti {{ $sertifikat->jenis === 'akademik' ? 'ti-school' : 'ti-trophy' }} text-base"
+                                           style="{{ $sertifikat->jenis === 'akademik' ? 'color:#2D3F6B;' : 'color:#C8922A;' }}"></i>
+                                    </div>
 
-                            @if($fileBakatAkademikPath)
-                                <div class="flex items-center gap-2 mb-3 p-2.5 rounded-lg"
-                                     style="background-color:rgba(46,125,85,0.05);border:1px solid rgba(46,125,85,0.15);">
-                                    <i class="ti ti-file-check shrink-0" style="color:#2E7D55;"></i>
-                                    <p class="text-[10px] font-semibold flex-1 truncate" style="color:#1A2340;">
-                                        {{ basename($fileBakatAkademikPath) }}
-                                    </p>
-                                    <a href="{{ Storage::url($fileBakatAkademikPath) }}" target="_blank" rel="noopener noreferrer"
-                                       class="shrink-0 px-2 py-1 rounded-lg text-[10px] font-semibold"
+                                    {{-- Info --}}
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-bold truncate" style="color:#1A2340;">{{ $sertifikat->nama_sertifikat }}</p>
+                                        <p class="text-[10px] mt-0.5" style="color:#6B7494;">
+                                            {{ $sertifikat->jenis === 'akademik' ? 'Akademik' : 'Non-Akademik' }}
+                                            · {{ $sertifikat->created_at->format('d M Y') }}
+                                        </p>
+                                    </div>
+
+                                    {{-- Badge Status --}}
+                                    @if($sertifikat->status === 'disetujui')
+                                        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0"
+                                              style="background-color:rgba(46,125,85,0.1);color:#2E7D55;border:1px solid rgba(46,125,85,0.2);">
+                                            <i class="ti ti-circle-check text-xs"></i> Disetujui
+                                        </span>
+                                    @elseif($sertifikat->status === 'ditolak')
+                                        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0"
+                                              style="background-color:rgba(180,69,47,0.08);color:#B4452F;border:1px solid rgba(180,69,47,0.2);">
+                                            <i class="ti ti-x text-xs"></i> Ditolak
+                                        </span>
+                                    @else
+                                        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0"
+                                              style="background-color:rgba(200,146,42,0.1);color:#C8922A;border:1px solid rgba(200,146,42,0.2);">
+                                            <i class="ti ti-clock text-xs"></i> Menunggu
+                                        </span>
+                                    @endif
+
+                                    {{-- Aksi --}}
+                                    <a href="{{ Storage::url($sertifikat->file_path) }}" target="_blank" rel="noopener noreferrer"
+                                       class="shrink-0 px-2 py-1.5 rounded-lg text-[10px] font-semibold"
                                        style="background-color:rgba(45,63,107,0.08);color:#2D3F6B;">
                                         <i class="ti ti-eye"></i>
                                     </a>
-                                    <a href="{{ Storage::url($fileBakatAkademikPath) }}" download
-                                       class="shrink-0 px-2 py-1 rounded-lg text-[10px] font-semibold"
-                                       style="background-color:rgba(46,125,85,0.08);color:#2E7D55;">
-                                        <i class="ti ti-download"></i>
-                                    </a>
-                                    <button wire:click="hapusSertifikat('akademik')"
-                                            wire:confirm="Hapus sertifikat akademik?"
-                                            class="shrink-0 px-2 py-1 rounded-lg text-[10px] font-semibold"
-                                            style="background-color:rgba(180,69,47,0.08);color:#B4452F;">
-                                        <i class="ti ti-trash"></i>
-                                    </button>
+                                    @if($sertifikat->status !== 'disetujui')
+                                        <button wire:click="hapusSertifikat({{ $sertifikat->id }})"
+                                                wire:confirm="Hapus sertifikat ini?"
+                                                class="shrink-0 px-2 py-1.5 rounded-lg text-[10px] font-semibold"
+                                                style="background-color:rgba(180,69,47,0.08);color:#B4452F;">
+                                            <i class="ti ti-trash"></i>
+                                        </button>
+                                    @endif
                                 </div>
-                            @endif
 
-                            <input type="file" wire:model="fileBakatAkademik"
-                                   accept=".pdf,.jpg,.jpeg,.png"
-                                   class="block w-full text-xs text-gray-500 mb-2
-                                          file:mr-3 file:py-1.5 file:px-3
-                                          file:rounded-lg file:border-0
-                                          file:text-xs file:font-semibold
-                                          file:bg-[#1A2340] file:text-[#FDF6E8]
-                                          hover:file:bg-[#2D3F6B] file:transition-all cursor-pointer">
-                            @error('fileBakatAkademik') <p class="text-[10px] mb-2 font-semibold" style="color:#B4452F;">{{ $message }}</p> @enderror
-                            <button wire:click="uploadSertifikat('akademik')"
-                                    wire:loading.attr="disabled"
-                                    class="w-full py-2 rounded-xl text-xs font-bold transition-all"
-                                    style="background-color:#1A2340;color:#FDF6E8;">
-                                <span wire:loading.remove wire:target="uploadSertifikat('akademik')">
-                                    <i class="ti ti-upload mr-1"></i>{{ $fileBakatAkademikPath ? 'Perbarui' : 'Unggah' }}
-                                </span>
-                                <span wire:loading wire:target="uploadSertifikat('akademik')">
-                                    <i class="ti ti-loader animate-spin mr-1"></i>Mengunggah...
-                                </span>
-                            </button>
-                        </div>
-
-                        {{-- Non-Akademik --}}
-                        <div class="sim-card p-4 md:p-5 border-2" style="border-color:rgba(200,146,42,0.25);">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2">
-                                    <i class="ti ti-trophy text-base" style="color:#C8922A;"></i>
-                                    <span class="text-xs font-bold" style="color:#1A2340;">Sertifikat Non-Akademik</span>
-                                </div>
-                                @if($fileBakatNonAkademikPath)
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-                                          style="background-color:rgba(46,125,85,0.1);color:#2E7D55;border:1px solid rgba(46,125,85,0.2);">
-                                        <i class="ti ti-circle-check text-xs"></i> Ada
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
-                                          style="background-color:rgba(180,69,47,0.08);color:#B4452F;border:1px solid rgba(180,69,47,0.2);">
-                                        <i class="ti ti-x text-xs"></i> Belum Ada
-                                    </span>
+                                {{-- Catatan jika ditolak --}}
+                                @if($sertifikat->status === 'ditolak' && $sertifikat->catatan)
+                                    <div class="mx-1 px-3 py-2 rounded-lg text-[10px]"
+                                         style="background-color:rgba(180,69,47,0.06);border:1px solid rgba(180,69,47,0.15);color:#B4452F;">
+                                        <i class="ti ti-info-circle mr-1"></i><strong>Catatan dosen:</strong> {{ $sertifikat->catatan }}
+                                    </div>
                                 @endif
-                            </div>
-
-                            @if(session('sertifikat_message_non_akademik'))
-                                <div class="mb-3 px-3 py-2 rounded-lg text-[10px] font-semibold flex items-center gap-1.5"
-                                     style="background-color:rgba(46,125,85,0.1);color:#2E7D55;">
-                                    <i class="ti ti-circle-check"></i> {{ session('sertifikat_message_non_akademik') }}
-                                </div>
-                            @endif
-
-                            @if($fileBakatNonAkademikPath)
-                                <div class="flex items-center gap-2 mb-3 p-2.5 rounded-lg"
-                                     style="background-color:rgba(46,125,85,0.05);border:1px solid rgba(46,125,85,0.15);">
-                                    <i class="ti ti-file-check shrink-0" style="color:#2E7D55;"></i>
-                                    <p class="text-[10px] font-semibold flex-1 truncate" style="color:#1A2340;">
-                                        {{ basename($fileBakatNonAkademikPath) }}
-                                    </p>
-                                    <a href="{{ Storage::url($fileBakatNonAkademikPath) }}" target="_blank" rel="noopener noreferrer"
-                                       class="shrink-0 px-2 py-1 rounded-lg text-[10px] font-semibold"
-                                       style="background-color:rgba(45,63,107,0.08);color:#2D3F6B;">
-                                        <i class="ti ti-eye"></i>
-                                    </a>
-                                    <a href="{{ Storage::url($fileBakatNonAkademikPath) }}" download
-                                       class="shrink-0 px-2 py-1 rounded-lg text-[10px] font-semibold"
-                                       style="background-color:rgba(46,125,85,0.08);color:#2E7D55;">
-                                        <i class="ti ti-download"></i>
-                                    </a>
-                                    <button wire:click="hapusSertifikat('non_akademik')"
-                                            wire:confirm="Hapus sertifikat non-akademik?"
-                                            class="shrink-0 px-2 py-1 rounded-lg text-[10px] font-semibold"
-                                            style="background-color:rgba(180,69,47,0.08);color:#B4452F;">
-                                        <i class="ti ti-trash"></i>
-                                    </button>
-                                </div>
-                            @endif
-
-                            <input type="file" wire:model="fileBakatNonAkademik"
-                                   accept=".pdf,.jpg,.jpeg,.png"
-                                   class="block w-full text-xs text-gray-500 mb-2
-                                          file:mr-3 file:py-1.5 file:px-3
-                                          file:rounded-lg file:border-0
-                                          file:text-xs file:font-semibold
-                                          file:bg-[#C8922A] file:text-[#1A2340]
-                                          hover:file:bg-[#1A2340] hover:file:text-[#FDF6E8] file:transition-all cursor-pointer">
-                            @error('fileBakatNonAkademik') <p class="text-[10px] mb-2 font-semibold" style="color:#B4452F;">{{ $message }}</p> @enderror
-                            <button wire:click="uploadSertifikat('non_akademik')"
-                                    wire:loading.attr="disabled"
-                                    class="w-full py-2 rounded-xl text-xs font-bold transition-all"
-                                    style="background-color:#C8922A;color:#1A2340;">
-                                <span wire:loading.remove wire:target="uploadSertifikat('non_akademik')">
-                                    <i class="ti ti-upload mr-1"></i>{{ $fileBakatNonAkademikPath ? 'Perbarui' : 'Unggah' }}
-                                </span>
-                                <span wire:loading wire:target="uploadSertifikat('non_akademik')">
-                                    <i class="ti ti-loader animate-spin mr-1"></i>Mengunggah...
-                                </span>
-                            </button>
+                            @endforeach
                         </div>
-
-                    </div>
+                    @endif
                 </div>
 
                 {{-- === ABOUT + INFO === --}}

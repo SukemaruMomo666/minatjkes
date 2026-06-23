@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Models\DraftJawaban;
 use App\Models\JawabanMbti;
 use App\Models\Kelas;
+use App\Models\Sertifikat;
 use App\Models\Soal;
 use App\Models\SoalMbti;
 use App\Models\User;
@@ -71,6 +72,11 @@ class Index extends Component
 
         $mhsIds = $mahasiswas->pluck('id');
 
+        // Batch load sertifikats per mahasiswa
+        $allSertifikats = Sertifikat::whereIn('user_id', $mhsIds)
+            ->get()
+            ->groupBy('user_id');
+
         // Batch load semua jawaban minat bakat
         $allJawabansMinat = DraftJawaban::with('soal.kategori')
             ->whereIn('user_id', $mhsIds)
@@ -90,6 +96,7 @@ class Index extends Component
         foreach ($mahasiswas as $mhs) {
             $jawabansMinat = $allJawabansMinat[$mhs->id] ?? collect();
             $jawabansMbti = $allJawabsMbti[$mhs->id] ?? collect();
+            $sertifikatsMhs = $allSertifikats[$mhs->id] ?? collect();
 
             $jumlahDijawabMinat = $jawabansMinat->count();
             $jumlahDijawabMbti = $jawabansMbti->count();
@@ -197,8 +204,8 @@ class Index extends Component
                 'status_minat' => $statusMinat,
                 'status_mbti' => $statusMbti,
                 'mbti_result' => $mbtiResult,
-                'file_akademik' => $mhs->file_bakat_akademik,
-                'file_non_akademik' => $mhs->file_bakat_non_akademik,
+                'jumlah_sertifikat' => $sertifikatsMhs->count(),
+                'sertifikat_disetujui' => $sertifikatsMhs->where('status', 'disetujui')->count(),
             ];
         }
 
@@ -307,6 +314,20 @@ class Index extends Component
         }
         arsort($skorPersen);
 
+        $sertifikats = Sertifikat::where('user_id', $mhsId)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(fn ($s) => [
+                'id' => $s->id,
+                'jenis' => $s->jenis,
+                'nama_sertifikat' => $s->nama_sertifikat,
+                'file_path' => $s->file_path,
+                'status' => $s->status,
+                'catatan' => $s->catatan,
+                'verified_at' => $s->verified_at?->format('d M Y'),
+            ])
+            ->toArray();
+
         $this->detailData = [
             'nama' => $mhs->nama ?? '-',
             'nim' => $mhs->nim_nidn ?? '-',
@@ -320,8 +341,7 @@ class Index extends Component
             'status_mbti' => $statusMbti,
             'mbti_result' => $mbtiResult,
             'skor_kategori' => $skorPersen,
-            'file_akademik' => $mhs->file_bakat_akademik,
-            'file_non_akademik' => $mhs->file_bakat_non_akademik,
+            'sertifikats' => $sertifikats,
         ];
 
         $this->selectedMhsId = $mhsId;
@@ -333,13 +353,51 @@ class Index extends Component
         $this->detailData = [];
     }
 
+    public function setujuiSertifikat(int $sertifikatId): void
+    {
+        $sertifikat = Sertifikat::find($sertifikatId);
+        if (! $sertifikat) {
+            return;
+        }
+
+        $sertifikat->update([
+            'status' => 'disetujui',
+            'verified_by' => Auth::id(),
+            'verified_at' => now(),
+            'catatan' => null,
+        ]);
+
+        if ($this->selectedMhsId) {
+            $this->openDetail($this->selectedMhsId);
+        }
+    }
+
+    public function tolakSertifikat(int $sertifikatId, string $catatan = ''): void
+    {
+        $sertifikat = Sertifikat::find($sertifikatId);
+        if (! $sertifikat) {
+            return;
+        }
+
+        $sertifikat->update([
+            'status' => 'ditolak',
+            'verified_by' => Auth::id(),
+            'verified_at' => now(),
+            'catatan' => $catatan ?: null,
+        ]);
+
+        if ($this->selectedMhsId) {
+            $this->openDetail($this->selectedMhsId);
+        }
+    }
+
     public function exportCsv(): StreamedResponse
     {
         $rows = $this->hasilAsesmen;
         $kelas = $this->namaKelas;
 
         return response()->streamDownload(function () use ($rows, $kelas) {
-            $headers = ['No', 'Nama', 'NIM', 'Kelas', 'Minat Utama', 'Skor (%)', 'Status Minat Bakat', 'Status MBTI', 'Hasil MBTI', 'Sertifikat Akademik', 'Sertifikat Non-Akademik'];
+            $headers = ['No', 'Nama', 'NIM', 'Kelas', 'Minat Utama', 'Skor (%)', 'Status Minat Bakat', 'Status MBTI', 'Hasil MBTI', 'Jumlah Sertifikat'];
 
             echo "<html xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:x=\"urn:schemas-microsoft-com:office:excel\">\n";
             echo "<head><meta charset=\"UTF-8\"><style>\n";
@@ -381,8 +439,7 @@ class Index extends Component
                 echo '<td style="text-align:center;" class="'.$classMinat.'">'.htmlspecialchars($statusMinat).'</td>';
                 echo '<td style="text-align:center;" class="'.$classMbti.'">'.htmlspecialchars($statusMbti).'</td>';
                 echo '<td style="text-align:center; font-weight:bold;">'.htmlspecialchars($mhs['mbti_result'] ?: '-').'</td>';
-                echo '<td style="text-align:center;" class="'.($mhs['file_akademik'] ? 'badge-ada' : 'badge-belum').'">'.($mhs['file_akademik'] ? 'Ada' : 'Belum').'</td>';
-                echo '<td style="text-align:center;" class="'.($mhs['file_non_akademik'] ? 'badge-ada' : 'badge-belum').'">'.($mhs['file_non_akademik'] ? 'Ada' : 'Belum').'</td>';
+                echo '<td style="text-align:center;" class="'.($mhs['jumlah_sertifikat'] > 0 ? 'badge-ada' : 'badge-belum').'">'.$mhs['jumlah_sertifikat'].' file</td>';
                 echo '</tr>';
             }
 

@@ -4,9 +4,9 @@ namespace App\Livewire\Mahasiswa\Dashboard;
 
 use App\Models\DraftJawaban;
 use App\Models\JawabanMbti;
+use App\Models\Sertifikat;
 use App\Models\Soal;
 use App\Models\SoalMbti;
-use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -45,13 +45,13 @@ class Index extends Component
 
     public string $statusMbti = 'belum';
 
-    public ?string $fileBakatAkademikPath = null;
+    public $fileBaru;
 
-    public ?string $fileBakatNonAkademikPath = null;
+    public string $jenisBaru = 'akademik';
 
-    public $fileBakatAkademik;
+    public string $namaBaru = '';
 
-    public $fileBakatNonAkademik;
+    public bool $showTambahForm = false;
 
     public function mount(): void
     {
@@ -71,9 +71,6 @@ class Index extends Component
             'perempuan' => 'Perempuan',
             default => '-',
         };
-
-        $this->fileBakatAkademikPath = $user->file_bakat_akademik;
-        $this->fileBakatNonAkademikPath = $user->file_bakat_non_akademik;
 
         $this->totalSoal = Soal::where('is_active', true)->count();
         $this->totalDijawab = DraftJawaban::where('user_id', Auth::id())->count();
@@ -106,60 +103,65 @@ class Index extends Component
         }
     }
 
-    public function uploadSertifikat(string $jenis): void
+    public function toggleTambahForm(): void
     {
-        $field = $jenis === 'akademik' ? 'fileBakatAkademik' : 'fileBakatNonAkademik';
-
-        $this->validate([
-            $field => 'required|mimes:pdf,jpg,jpeg,png|max:2048',
-        ], [
-            "{$field}.required" => 'Pilih file terlebih dahulu.',
-            "{$field}.mimes" => 'File harus berformat PDF, JPG, atau PNG.',
-            "{$field}.max" => 'Ukuran file maksimal 2MB.',
-        ]);
-
-        $user = User::find(Auth::id());
-        $column = "file_bakat_{$jenis}";
-
-        if ($user->$column) {
-            Storage::disk('public')->delete($user->$column);
-        }
-
-        $path = $this->$field->store('bukti_bakat', 'public');
-        $user->update([$column => $path]);
-
-        if ($jenis === 'akademik') {
-            $this->fileBakatAkademikPath = $path;
-            $this->fileBakatAkademik = null;
-        } else {
-            $this->fileBakatNonAkademikPath = $path;
-            $this->fileBakatNonAkademik = null;
-        }
-
-        session()->flash('sertifikat_message_'.$jenis, 'Sertifikat berhasil diunggah.');
+        $this->showTambahForm = ! $this->showTambahForm;
+        $this->reset(['fileBaru', 'namaBaru', 'jenisBaru']);
+        $this->jenisBaru = 'akademik';
     }
 
-    public function hapusSertifikat(string $jenis): void
+    public function uploadSertifikat(): void
     {
-        $user = User::find(Auth::id());
-        $column = "file_bakat_{$jenis}";
+        $this->validate([
+            'fileBaru' => 'required|mimes:pdf,jpg,jpeg,png|max:2048',
+            'namaBaru' => 'required|string|max:100',
+            'jenisBaru' => 'required|in:akademik,non_akademik',
+        ], [
+            'fileBaru.required' => 'Pilih file terlebih dahulu.',
+            'fileBaru.mimes' => 'File harus berformat PDF, JPG, atau PNG.',
+            'fileBaru.max' => 'Ukuran file maksimal 2MB.',
+            'namaBaru.required' => 'Nama sertifikat wajib diisi.',
+        ]);
 
-        if ($user->$column) {
-            Storage::disk('public')->delete($user->$column);
-            $user->update([$column => null]);
+        $path = $this->fileBaru->store('bukti_bakat', 'public');
 
-            if ($jenis === 'akademik') {
-                $this->fileBakatAkademikPath = null;
-            } else {
-                $this->fileBakatNonAkademikPath = null;
-            }
+        Sertifikat::create([
+            'user_id' => Auth::id(),
+            'jenis' => $this->jenisBaru,
+            'nama_sertifikat' => $this->namaBaru,
+            'file_path' => $path,
+            'status' => 'pending',
+        ]);
 
-            session()->flash('sertifikat_message_'.$jenis, 'Sertifikat berhasil dihapus.');
+        $this->reset(['fileBaru', 'namaBaru', 'jenisBaru']);
+        $this->jenisBaru = 'akademik';
+        $this->showTambahForm = false;
+
+        session()->flash('sertifikat_success', 'Sertifikat berhasil diunggah.');
+    }
+
+    public function hapusSertifikat(int $id): void
+    {
+        $sertifikat = Sertifikat::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (! $sertifikat) {
+            return;
         }
+
+        Storage::disk('public')->delete($sertifikat->file_path);
+        $sertifikat->delete();
+
+        session()->flash('sertifikat_success', 'Sertifikat berhasil dihapus.');
     }
 
     public function render(): View
     {
-        return view('livewire.mahasiswa.dashboard')->layout('layouts.blank');
+        $sertifikats = Sertifikat::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('livewire.mahasiswa.dashboard', compact('sertifikats'))->layout('layouts.blank');
     }
 }
